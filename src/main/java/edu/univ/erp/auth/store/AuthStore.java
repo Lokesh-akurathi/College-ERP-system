@@ -117,4 +117,19 @@ public class AuthStore {
             return false;
         }
     }
+    public String findUsernameByUserId(int userId) {
+    String sql = "SELECT username FROM users_auth WHERE user_id = ?";
+    try (Connection conn = DatabaseConfig.getAuthConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, userId);
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()) {
+            return rs.getString("username");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+
 }

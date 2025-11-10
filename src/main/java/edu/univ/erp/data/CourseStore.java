@@ -94,4 +94,31 @@ public class CourseStore {
         course.setCredits(rs.getInt("credits"));
         return course;
     }
+    // inside CourseStore.java
+public boolean updateCourse(int courseId, String title, int credits) {
+    String sql = "UPDATE courses SET title = ?, credits = ? WHERE course_id = ?";
+    try (Connection conn = DatabaseConfig.getErpConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setString(1, title);
+        pstmt.setInt(2, credits);
+        pstmt.setInt(3, courseId);
+        return pstmt.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
+public boolean deleteCourse(int courseId) {
+    String sql = "DELETE FROM courses WHERE course_id = ?";
+    try (Connection conn = DatabaseConfig.getErpConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        pstmt.setInt(1, courseId);
+        return pstmt.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
 }

@@ -15,6 +15,7 @@ public class Enrollment {
     private String sectionDayTime;
     private String sectionRoom;
     private String instructorName;
+    private int instructorId;
 
     public Enrollment() {}
 
@@ -112,6 +113,10 @@ public class Enrollment {
     public void setInstructorName(String instructorName) {
         this.instructorName = instructorName;
     }
+
+    public void setInstructorId(int instructorId) {
+    this.instructorId = instructorId;
+}
 
     @Override
     public String toString() {
