@@ -382,7 +382,7 @@ public class ManageSectionsPanel extends JPanel {
         JTextField dayTimeField = new JTextField(15);
         JTextField roomField = new JTextField(10);
         JSpinner capacitySpinner = new JSpinner(new SpinnerNumberModel(30, 1, 500, 1));
-        String[] semesters = {"Spring", "Fall", "Summer"};
+        String[] semesters = {"Monsoon", "Winter", "Summer"};
         JComboBox<String> semesterCombo = new JComboBox<>(semesters);
         JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(2025, 2020, 2030, 1));
 

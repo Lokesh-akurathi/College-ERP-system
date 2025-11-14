@@ -77,11 +77,11 @@ INSERT INTO courses (code, title, credits) VALUES
 ('PHY101', 'Physics I', 3);
 
 INSERT INTO sections (course_id, instructor_id, day_time, room, capacity, semester, year) VALUES
-(1, 2, 'Mon/Wed 9:00-10:30', 'Room 101', 50, 'Spring', 2025),
-(2, 2, 'Tue/Thu 11:00-12:30', 'Room 102', 40, 'Spring', 2025),
-(3, 2, 'Mon/Wed 14:00-15:30', 'Room 103', 35, 'Spring', 2025),
-(4, 2, 'Tue/Thu 9:00-10:30', 'Room 104', 60, 'Spring', 2025),
-(5, 2, 'Fri 14:00-17:00', 'Lab 201', 30, 'Spring', 2025);
+(1, 2, 'Mon/Wed 9:00-10:30', 'Room 101', 50, 'Monsoon', 2025),
+(2, 2, 'Tue/Thu 11:00-12:30', 'Room 102', 40, 'Monsoon', 2025),
+(3, 2, 'Mon/Wed 14:00-15:30', 'Room 103', 35, 'Monsoon', 2025),
+(4, 2, 'Tue/Thu 9:00-10:30', 'Room 104', 60, 'Monsoon', 2025),
+(5, 2, 'Fri 14:00-17:00', 'Lab 201', 30, 'Monsoon', 2025);
 
 INSERT INTO enrollments (student_id, section_id, status) VALUES
 (3, 1, 'ACTIVE'),
