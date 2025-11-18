@@ -19,9 +19,9 @@ MAIN_CLASS="edu.univ.erp.Main"
 # -----------------------------------
 
 ## 1. Ask for PostgreSQL password securely
-#read -s -p "Enter PostgreSQL password for user '$DB_USER': " DB_PASS
-#echo ""
-PGPASSWORD="postgres"
+read -s -p "Enter PostgreSQL password for user '$DB_USER': " DB_PASS
+echo ""
+export PGPASSWORD="$DB_PASS"
 
 # 2. Check for required tools
 command -v java >/dev/null 2>&1 || { echo "Java not found. Install JDK 17+."; exit 1; }
