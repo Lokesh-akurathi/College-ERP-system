@@ -247,6 +247,7 @@
 -- =====================================================================
 
 DROP TABLE IF EXISTS grades CASCADE;
+DROP TABLE IF EXISTS grading_criteria CASCADE;
 DROP TABLE IF EXISTS enrollments CASCADE;
 DROP TABLE IF EXISTS section_times CASCADE;
 DROP TABLE IF EXISTS sections CASCADE;
@@ -304,12 +305,29 @@ CREATE TABLE enrollments (
     UNIQUE(student_id, section_id, status)
 );
 
+-- CREATE TABLE grades (
+--     grade_id SERIAL PRIMARY KEY,
+--     enrollment_id INTEGER NOT NULL REFERENCES enrollments(enrollment_id),
+--     component VARCHAR(20) NOT NULL,
+--     score DOUBLE PRECISION CHECK (score >= 0 AND score <= 100),
+--     final_grade VARCHAR(2)
+-- );
 CREATE TABLE grades (
     grade_id SERIAL PRIMARY KEY,
     enrollment_id INTEGER NOT NULL REFERENCES enrollments(enrollment_id),
-    component VARCHAR(20) NOT NULL,
+    component VARCHAR(100) NOT NULL,
     score DOUBLE PRECISION CHECK (score >= 0 AND score <= 100),
-    final_grade VARCHAR(2)
+    UNIQUE(enrollment_id, component)
+);
+
+-- GRADING CRITERIA (New table to store instructor-defined weights)
+CREATE TABLE grading_criteria (
+    criteria_id SERIAL PRIMARY KEY,
+    section_id INTEGER NOT NULL REFERENCES sections(section_id) ON DELETE CASCADE,
+    component_name VARCHAR(100) NOT NULL,
+    weight_percentage DECIMAL(5, 2) NOT NULL CHECK (weight_percentage > 0 AND weight_percentage <= 100),
+    display_order INTEGER NOT NULL DEFAULT 0,
+    UNIQUE(section_id, component_name) 
 );
 
 CREATE TABLE settings (
@@ -355,11 +373,37 @@ INSERT INTO enrollments (student_id, section_id, status) VALUES
 (3, 2, 'ACTIVE'),
 (4, 1, 'ACTIVE');
 
-INSERT INTO grades (enrollment_id, component, score, final_grade) VALUES
-(1, 'QUIZ', 85.0, NULL),
-(1, 'MIDTERM', 78.0, NULL),
-(1, 'ENDSEM', 82.0, NULL),
-(1, 'FINAL', 81.4, 'B');
+-- INSERT INTO grades (enrollment_id, component, score, final_grade) VALUES
+-- (1, 'QUIZ', 85.0, NULL),
+-- (1, 'MIDTERM', 78.0, NULL),
+-- (1, 'ENDSEM', 82.0, NULL),
+-- (1, 'FINAL', 81.4, 'B');
+
+-- REVISED GRADES DATA
+-- Note: FINAL grade component and final_grade column are removed.
+INSERT INTO grades (enrollment_id, component, score) VALUES
+(1, 'QUIZ', 85.0),
+(1, 'MIDTERM', 78.0),
+(1, 'ENDSEM', 82.0); -- Use ENDSEM as one component. The final grade is calculated.
+
+-- =====================================================================
+-- SAMPLE GRADING CRITERIA DATA
+-- =====================================================================
+
+-- Criteria for Section 1 (CSE101: Intro to Programming)
+INSERT INTO grading_criteria (section_id, component_name, weight_percentage, display_order) VALUES
+(1, 'Homework', 20.00, 10),
+(1, 'Quiz', 15.00, 20),
+(1, 'Midterm Exam', 30.00, 30),
+(1, 'Final Exam', 35.00, 40);
+-- Total weight is 20 + 15 + 30 + 35 = 100.00%
+
+-- Criteria for Section 2 (CSE201: Data Structures) - Optional, for testing
+INSERT INTO grading_criteria (section_id, component_name, weight_percentage, display_order) VALUES
+(2, 'Lab Reports', 40.00, 10),
+(2, 'Midterm Exam', 30.00, 20),
+(2, 'Final Exam', 30.00, 30);
+-- Total weight is 40 + 30 + 30 = 100.00%
 
 INSERT INTO settings (key, value) VALUES
 ('maintenance_on', 'false');

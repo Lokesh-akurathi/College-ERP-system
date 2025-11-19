@@ -1,3 +1,74 @@
+// package edu.univ.erp.domain;
+
+// public class Grade {
+//     private int gradeId;
+//     private int enrollmentId;
+//     private String component;
+//     private Double score;
+//     private String finalGrade;
+
+//     public Grade() {}
+
+//     public Grade(int gradeId, int enrollmentId, String component, Double score, String finalGrade) {
+//         this.gradeId = gradeId;
+//         this.enrollmentId = enrollmentId;
+//         this.component = component;
+//         this.score = score;
+//         this.finalGrade = finalGrade;
+//     }
+
+//     public int getGradeId() {
+//         return gradeId;
+//     }
+
+//     public void setGradeId(int gradeId) {
+//         this.gradeId = gradeId;
+//     }
+
+//     public int getEnrollmentId() {
+//         return enrollmentId;
+//     }
+
+//     public void setEnrollmentId(int enrollmentId) {
+//         this.enrollmentId = enrollmentId;
+//     }
+
+//     public String getComponent() {
+//         return component;
+//     }
+
+//     public void setComponent(String component) {
+//         this.component = component;
+//     }
+
+//     public Double getScore() {
+//         return score;
+//     }
+
+//     public void setScore(Double score) {
+//         this.score = score;
+//     }
+
+//     public String getFinalGrade() {
+//         return finalGrade;
+//     }
+
+//     public void setFinalGrade(String finalGrade) {
+//         this.finalGrade = finalGrade;
+//     }
+
+//     @Override
+//     public String toString() {
+//         return "Grade{" +
+//                 "gradeId=" + gradeId +
+//                 ", enrollmentId=" + enrollmentId +
+//                 ", component='" + component + '\'' +
+//                 ", score=" + score +
+//                 ", finalGrade='" + finalGrade + '\'' +
+//                 '}';
+//     }
+// }
+
 package edu.univ.erp.domain;
 
 public class Grade {
@@ -5,16 +76,16 @@ public class Grade {
     private int enrollmentId;
     private String component;
     private Double score;
-    private String finalGrade;
+    // REMOVED: private String finalGrade; // No longer needed as a persisted field
 
     public Grade() {}
 
-    public Grade(int gradeId, int enrollmentId, String component, Double score, String finalGrade) {
+    // REMOVED 'finalGrade' from constructor
+    public Grade(int gradeId, int enrollmentId, String component, Double score) {
         this.gradeId = gradeId;
         this.enrollmentId = enrollmentId;
         this.component = component;
         this.score = score;
-        this.finalGrade = finalGrade;
     }
 
     public int getGradeId() {
@@ -49,13 +120,8 @@ public class Grade {
         this.score = score;
     }
 
-    public String getFinalGrade() {
-        return finalGrade;
-    }
-
-    public void setFinalGrade(String finalGrade) {
-        this.finalGrade = finalGrade;
-    }
+    // REMOVED: getFinalGrade()
+    // REMOVED: setFinalGrade()
 
     @Override
     public String toString() {
@@ -64,7 +130,7 @@ public class Grade {
                 ", enrollmentId=" + enrollmentId +
                 ", component='" + component + '\'' +
                 ", score=" + score +
-                ", finalGrade='" + finalGrade + '\'' +
+                // REMOVED: ", finalGrade='" + finalGrade + '\'' +
                 '}';
     }
 }
