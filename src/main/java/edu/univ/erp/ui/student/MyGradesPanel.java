@@ -1,169 +1,167 @@
-// package edu.univ.erp.ui.student;
-
-// import edu.univ.erp.domain.Enrollment;
-// import edu.univ.erp.domain.Grade;
-// import edu.univ.erp.service.EnrollmentService;
-// import edu.univ.erp.service.GradeService;
-
-// import javax.swing.*;
-// import javax.swing.table.DefaultTableModel;
-// import java.awt.*;
-// import java.util.HashMap;
-// import java.util.List;
-// import java.util.Map;
-
-// public class MyGradesPanel extends JPanel {
-//     private final EnrollmentService enrollmentService;
-//     private final GradeService gradeService;
-
-//     public MyGradesPanel() {
-//         this.enrollmentService = new EnrollmentService();
-//         this.gradeService = new GradeService();
-        
-//         setLayout(new BorderLayout());
-
-//         JLabel titleLabel = new JLabel("My Grades");
-//         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-//         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-//         add(titleLabel, BorderLayout.NORTH);
-
-//         String[] columns = {"Course Code", "Course Title", "Quiz", "Midterm", "End-Sem", "Final Score", "Grade"};
-//         DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
-//             @Override
-//             public boolean isCellEditable(int row, int column) {
-//                 return false;
-//             }
-//         };
-
-//         List<Enrollment> enrollments = enrollmentService.getMyEnrollments();
-        
-//         for (Enrollment enrollment : enrollments) {
-//             List<Grade> grades = gradeService.getGradesForEnrollment(enrollment.getEnrollmentId());
-            
-//             Map<String, Double> scoreMap = new HashMap<>();
-//             String finalGrade = "";
-            
-//             for (Grade grade : grades) {
-//                 if (grade.getScore() != null) {
-//                     scoreMap.put(grade.getComponent(), grade.getScore());
-//                 }
-//                 if ("FINAL".equals(grade.getComponent()) && grade.getFinalGrade() != null) {
-//                     finalGrade = grade.getFinalGrade();
-//                 }
-//             }
-
-//             Object[] row = {
-//                 enrollment.getCourseCode(),
-//                 enrollment.getCourseTitle(),
-//                 scoreMap.containsKey("QUIZ") ? String.format("%.2f", scoreMap.get("QUIZ")) : "-",
-//                 scoreMap.containsKey("MIDTERM") ? String.format("%.2f", scoreMap.get("MIDTERM")) : "-",
-//                 scoreMap.containsKey("ENDSEM") ? String.format("%.2f", scoreMap.get("ENDSEM")) : "-",
-//                 scoreMap.containsKey("FINAL") ? String.format("%.2f", scoreMap.get("FINAL")) : "-",
-//                 finalGrade.isEmpty() ? "-" : finalGrade
-//             };
-//             tableModel.addRow(row);
-//         }
-
-//         JTable table = new JTable(tableModel);
-//         table.setRowHeight(25);
-        
-//         JScrollPane scrollPane = new JScrollPane(table);
-//         add(scrollPane, BorderLayout.CENTER);
-
-//         JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-//         JLabel infoLabel = new JLabel("Grading: Quiz (20%), Midterm (30%), End-Sem (50%)");
-//         infoLabel.setFont(new Font("Arial", Font.ITALIC, 12));
-//         infoPanel.add(infoLabel);
-//         add(infoPanel, BorderLayout.SOUTH);
-//     }
-// }
 
 package edu.univ.erp.ui.student;
 
+import edu.univ.erp.data.GradeStore;
 import edu.univ.erp.domain.Enrollment;
 import edu.univ.erp.domain.Grade;
+import edu.univ.erp.domain.GradingCriteria;
 import edu.univ.erp.service.EnrollmentService;
 import edu.univ.erp.service.GradeService;
+import edu.univ.erp.data.GradingStore;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+
+class ScoreWithWeight {
+    double score;
+    double weight;
+
+    ScoreWithWeight(double score, double weight) {
+        this.score = score;
+        this.weight = weight;
+    }
+}
+
 
 public class MyGradesPanel extends JPanel {
+
     private final EnrollmentService enrollmentService;
     private final GradeService gradeService;
+    private final GradingStore gradingStore;
 
     public MyGradesPanel() {
         this.enrollmentService = new EnrollmentService();
         this.gradeService = new GradeService();
-        
+        this.gradingStore = new GradingStore();
+
         setLayout(new BorderLayout());
 
         JLabel titleLabel = new JLabel("My Grades");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
         add(titleLabel, BorderLayout.NORTH);
 
-        // NOTE: These columns are hardcoded and will not reflect dynamic criteria. 
-        // A future enhancement is required here, but we proceed with the current structure for now.
-        String[] columns = {"Course Code", "Course Title", "Quiz", "Midterm", "End-Sem", "Final Score", "Grade"};
-        DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+        // MAIN SCROLLABLE PANEL (vertical)
+        JPanel courseListPanel = new JPanel();
+        courseListPanel.setLayout(new BoxLayout(courseListPanel, BoxLayout.Y_AXIS));
+        courseListPanel.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        List<Enrollment> enrollments = enrollmentService.getMyEnrollments();
-        
-        for (Enrollment enrollment : enrollments) {
-            List<Grade> grades = gradeService.getGradesForEnrollment(enrollment.getEnrollmentId());
-            
-            Map<String, Double> scoreMap = new HashMap<>();
-            String finalGrade = ""; // Letter grade (A, B, C, etc.)
-            
-            for (Grade grade : grades) {
-                // Component names from the database are UPPERCASE (e.g., "QUIZ", "FINAL")
-                String componentKey = grade.getComponent(); 
-                
-                if (grade.getScore() != null) {
-                    scoreMap.put(componentKey, grade.getScore());
-                }
-                
-                // CRITICAL FIX: Calculate the letter grade using the FINAL numerical score
-                if ("FINAL".equals(componentKey) && grade.getScore() != null) {
-                    // Call the helper method in GradeService to convert the score to a letter grade
-                    finalGrade = gradeService.getLetterGrade(grade.getScore());
-                }
-            }
-
-            Object[] row = {
-                enrollment.getCourseCode(),
-                enrollment.getCourseTitle(),
-                scoreMap.containsKey("QUIZ") ? String.format("%.2f", scoreMap.get("QUIZ")) : "-",
-                scoreMap.containsKey("MIDTERM") ? String.format("%.2f", scoreMap.get("MIDTERM")) : "-",
-                scoreMap.containsKey("ENDSEM") ? String.format("%.2f", scoreMap.get("ENDSEM")) : "-",
-                scoreMap.containsKey("FINAL EXAM") ? String.format("%.2f", scoreMap.get("FINAL EXAM")) : "-",
-                scoreMap.containsKey("FINAL") ? String.format("%.2f", scoreMap.get("FINAL")) : "-",
-                finalGrade.isEmpty() ? "-" : finalGrade
-            };
-            tableModel.addRow(row);
-        }
-
-        JTable table = new JTable(tableModel);
-        table.setRowHeight(25);
-        
-        JScrollPane scrollPane = new JScrollPane(table);
+        JScrollPane scrollPane = new JScrollPane(courseListPanel);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
 
-        JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        // NOTE: This info label is hardcoded and inaccurate for dynamic criteria, but left for compilation.
-        JLabel infoLabel = new JLabel("Grading: Quiz (20%), Midterm (30%), End-Sem (50%)");
-        infoLabel.setFont(new Font("Arial", Font.ITALIC, 12));
-        infoPanel.add(infoLabel);
-        add(infoPanel, BorderLayout.SOUTH);
+        // -----------------------------
+        // FETCH ENROLLMENTS
+        // -----------------------------
+        List<Enrollment> enrollments = enrollmentService.getMyEnrollments();
+
+        if (enrollments.isEmpty()) {
+            JLabel noCourses = new JLabel("You are not enrolled in any courses.");
+            noCourses.setFont(new Font("Arial", Font.ITALIC, 14));
+            courseListPanel.add(noCourses);
+            return;
+        }
+
+        // -----------------------------
+        // CREATE ONE CARD PER COURSE
+        // -----------------------------
+//        List<GradingCriteria> findBySectionId(int sectionId)
+//
+        for (Enrollment enrollment : enrollments) {
+
+            // Card panel for a single course
+            JPanel card = new JPanel(new BorderLayout());
+            card.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(Color.GRAY),
+                    new EmptyBorder(10, 10, 10, 10)
+            ));
+            card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
+
+            // Course Title Label
+            JLabel header = new JLabel(
+                    enrollment.getCourseCode() + " — " + enrollment.getCourseTitle()
+            );
+            header.setFont(new Font("Arial", Font.BOLD, 16));
+            header.setBorder(new EmptyBorder(0, 0, 10, 0));
+            card.add(header, BorderLayout.NORTH);
+
+            // -----------------------------
+            // LOAD GRADES FOR THIS ENROLLMENT
+            // -----------------------------
+            List<Grade> grades = gradeService.getGradesForEnrollment(enrollment.getEnrollmentId());
+            Map<String, ScoreWithWeight> componentScores = new LinkedHashMap<>();
+            String letterGrade = "-";
+
+            Integer section_id = enrollment.getSectionId();
+            List<GradingCriteria> gradingcriteria = gradingStore.findBySectionId(section_id);
+
+            // Dynamically collect components
+            Map<String, Double> weightByComponent = new HashMap<>();
+            if (gradingcriteria != null) {
+                for (GradingCriteria gc : gradingcriteria) {
+                    if (gc != null && gc.getComponentName() != null) {
+                        String key = gc.getComponentName().trim().toUpperCase();
+                        weightByComponent.put(key, gc.getWeightPercentage());
+                    }
+                }
+            }
+
+            if (grades != null) {
+                for (Grade g : grades) {
+                    String comp = (g.getComponent() == null) ? "-" : g.getComponent().trim();
+
+                    double weightpercentage = weightByComponent.getOrDefault(comp.toUpperCase(), 0.0);
+
+                    if (g.getScore() != null) {
+                        componentScores.put(comp, new ScoreWithWeight(g.getScore(), weightpercentage));
+                    }
+                    if ((comp.equalsIgnoreCase("FINAL") || comp.equalsIgnoreCase("FINAL SCORE") || comp.equalsIgnoreCase("TOTAL")&& g.getScore() != null)){
+                        letterGrade = gradeService.getLetterGrade(g.getScore());
+                    }
+                }
+            }
+
+
+            String[] colNames = {"Component", "Score","weight %"};
+            DefaultTableModel model = new DefaultTableModel(colNames, 0) {
+                @Override public boolean isCellEditable(int r, int c) { return false; }
+            };
+
+            if (componentScores.isEmpty()) {
+                model.addRow(new Object[]{"No grades yet", "-","-"});
+            } else {
+                for (String comp : componentScores.keySet()) {
+                    ScoreWithWeight sw = componentScores.get(comp);
+
+                    model.addRow(new Object[]{
+                            comp,
+                            String.format("%.2f", sw.score),
+                            String.format("%.1f", sw.weight)
+                    });
+                }
+            }
+
+            JTable table = new JTable(model);
+            table.setRowHeight(24);
+            table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
+
+            JScrollPane tableScrollPane = new JScrollPane(table);
+            card.add(tableScrollPane, BorderLayout.CENTER);
+
+
+            JLabel finalGradeLabel = new JLabel("Final Grade: " + letterGrade);
+            finalGradeLabel.setFont(new Font("Arial", Font.BOLD, 14));
+            finalGradeLabel.setBorder(new EmptyBorder(5, 0, 0, 0));
+            card.add(finalGradeLabel, BorderLayout.SOUTH);
+
+
+            courseListPanel.add(card);
+
+            courseListPanel.add(Box.createVerticalStrut(15));
+        }
     }
 }

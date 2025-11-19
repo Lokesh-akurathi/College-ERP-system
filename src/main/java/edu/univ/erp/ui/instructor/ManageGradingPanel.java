@@ -125,7 +125,7 @@ public class ManageGradingPanel extends JPanel {
         if (criteriaList.isEmpty()) {
             // Add a default row if no criteria exists
             tableModel.addRow(new Object[]{"Homework", 40.0});
-            tableModel.addRow(new Object[]{"Final Exam", 60.0});
+            tableModel.addRow(new Object[]{"Endsem", 60.0});
         } else {
             for (GradingCriteria criteria : criteriaList) {
                 tableModel.addRow(new Object[]{
@@ -169,9 +169,8 @@ public class ManageGradingPanel extends JPanel {
         if (selectedIndex == -1 || selectedIndex >= instructorSections.size()) return;
 
         int selectedSectionId = instructorSections.get(selectedIndex).getSectionId();
-        
         List<GradingCriteria> criteriaList = new ArrayList<>();
-        
+
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             try {
                 String name = tableModel.getValueAt(i, 0).toString().trim();
