@@ -351,11 +351,11 @@ INSERT INTO courses (code, title, credits) VALUES
 ('PHY101', 'Physics I', 3);
 
 INSERT INTO sections (course_id, instructor_id, room, capacity, semester, year) VALUES
-(1, 2, 'Room 101', 50, 'Spring', 2025),
-(2, 2, 'Room 102', 40, 'Spring', 2025),
-(3, 2, 'Room 103', 35, 'Spring', 2025),
-(4, 2, 'Room 104', 60, 'Spring', 2025),
-(5, 2, 'Lab 201', 30, 'Spring', 2025);
+(1, 2, 'Room 101', 50, 'Monsoon', 2025),
+(2, 2, 'Room 102', 40, 'Monsoon', 2025),
+(3, 2, 'Room 103', 35, 'Monsoon', 2025),
+(4, 2, 'Room 104', 60, 'Monsoon', 2025),
+(5, 2, 'Lab 201', 30, 'Monsoon', 2025);
 
 INSERT INTO section_times (section_id, day_of_week, start_time, end_time) VALUES
 (1, 'Mon', '09:00', '10:30'),
@@ -381,10 +381,10 @@ INSERT INTO enrollments (student_id, section_id, status) VALUES
 
 -- REVISED GRADES DATA
 -- Note: FINAL grade component and final_grade column are removed.
-INSERT INTO grades (enrollment_id, component, score) VALUES
-(1, 'QUIZ', 85.0),
-(1, 'MIDTERM', 78.0),
-(1, 'ENDSEM', 82.0); -- Use ENDSEM as one component. The final grade is calculated.
+-- INSERT INTO grades (enrollment_id, component, score) VALUES
+-- (1, 'QUIZ', 85.0),
+-- (1, 'MIDSEM', 78.0),
+-- (1, 'ENDSEM', 82.0); -- Use ENDSEM as one component. The final grade is calculated.
 
 -- =====================================================================
 -- SAMPLE GRADING CRITERIA DATA

@@ -1151,7 +1151,7 @@ public class ManageSectionsPanel extends JPanel {
         // Other fields
         roomField = new JTextField(10);
         capacitySpinner = new JSpinner(new SpinnerNumberModel(30, 1, 1000, 1));
-        String[] semesters = {"Spring", "Fall", "Summer"};
+        String[] semesters = {"Monsoon", "Winter", "Summer"};
         semesterCombo = new JComboBox<>(semesters);
         yearSpinner = new JSpinner(new SpinnerNumberModel(2025, 2000, 2100, 1));
 
