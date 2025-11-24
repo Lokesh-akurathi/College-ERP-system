@@ -43,6 +43,15 @@ A desktop application built with Java Swing and JDBC for managing university cou
 - PostgreSQL 12 or higher
 - Maven 3.6 or higher
 
+### Database Connection Test - After installing postgreSQL
+```bash
+# Check PostgreSQL is running
+pg_isready
+
+# Verify connection details
+psql -h localhost -U postgres
+```
+
 ## Database Setup
 
 1. Create two PostgreSQL databases:

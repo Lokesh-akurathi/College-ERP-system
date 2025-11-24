@@ -219,14 +219,7 @@ The system comes pre-populated with:
 
 ## Troubleshooting
 
-### Database Connection Issues
-```bash
-# Check PostgreSQL is running
-pg_isready
 
-# Verify connection details
-psql -h localhost -U postgres -d your_database
-```
 
 ### Compilation Errors
 ```bash
