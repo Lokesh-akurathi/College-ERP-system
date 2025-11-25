@@ -343,6 +343,7 @@ import edu.univ.erp.domain.Grade;
 import edu.univ.erp.domain.Section;
 import edu.univ.erp.domain.GradingCriteria; // NEW: Import GradingCriteria
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -435,31 +436,55 @@ public class GradeService {
         StringBuilder missingComponents = new StringBuilder();
 
         // 3. Calculate weighted average using custom criteria
-        for (GradingCriteria criteria : criteriaList) {
-            // CRITICAL: Ensure we check against the UPPERCASE component key from the database
-            String component = criteria.getComponentName().toUpperCase(); 
-            double weight = criteria.getWeightPercentage();
+        // for (GradingCriteria criteria : criteriaList) {
+        //     // CRITICAL: Ensure we check against the UPPERCASE component key from the database
+        //     String component = criteria.getComponentName().toUpperCase(); 
+        //     double weight = criteria.getWeightPercentage();
 
-            if (scoreMap.containsKey(component)) {
-                double score = scoreMap.get(component);
-                finalScore += score * (weight / 100.0);
-                totalWeight += weight;
-            } else {
-                // Track missing components for an error message using the user-friendly name
-                missingComponents.append(criteria.getComponentName()).append(", ");
-            }
-        }
+        //     if (scoreMap.containsKey(component)) {
+        //         double score = scoreMap.get(component);
+        //         finalScore += score * (weight / 100.0);
+        //         totalWeight += weight;
+        //     } else {
+        //         // Track missing components for an error message using the user-friendly name
+        //         missingComponents.append(criteria.getComponentName()).append(", ");
+        //     }
+        // }
+        // 3. Calculate weighted average using custom criteria
+double totalDefinedWeight = 0.0; // NEW: To store the sum of ALL criteria weights
 
-        // 4. Validation: Check if all components have scores (or if the criteria sums to 100)
-        if (Math.abs(totalWeight - 100.0) > 0.001 || missingComponents.length() > 0) {
-            
-            String missingMsg = "";
-            if (missingComponents.length() > 0) {
-                // Remove trailing comma and space
-                missingMsg = " Missing scores for components: " + missingComponents.substring(0, missingComponents.length() - 2) + ".";
-            }
-            return "Not all required components have scores or criteria weights are invalid. Total weight of scored components: " + String.format("%.2f%%", totalWeight) + "." + missingMsg;
+for (GradingCriteria criteria : criteriaList) {
+// CRITICAL: Ensure we check against the UPPERCASE component key from the database
+String component = criteria.getComponentName().toUpperCase(); 
+double weight = criteria.getWeightPercentage();
+
+ // Always sum the total defined weight, regardless of whether a score exists
+ totalDefinedWeight += weight; // NEW LINE
+
+ if (scoreMap.containsKey(component)) {
+ double score = scoreMap.get(component);
+finalScore += score * (weight / 100.0);
+ totalWeight += weight;
+} else {
+// Track missing components for an error message using the user-friendly name
+missingComponents.append(criteria.getComponentName()).append(", ");
+ }}
+
+      // 4. Validation Checks
+
+ // Check 1: Must have scores for ALL defined components
+if (missingComponents.length() > 0) {
+ String missingMsg = missingComponents.substring(0, missingComponents.length() - 2);
+ 
+ return "Cannot compute final grade. Missing scores for components: " + missingMsg + ".";
+}
+
+ // Check 2: Must ensure the total defined weight of ALL criteria is 100%
+        if (Math.abs(totalDefinedWeight - 100.0) > 0.001) {
+            return "Cannot compute final grade. Total criteria weight is invalid: " 
+                + String.format("%.2f%%", totalDefinedWeight) + ". Must sum to 100.00%. Please check criteria management.";
         }
+        // At this point, totalWeight (of scored items) must equal totalDefinedWeight (100.0)
 
 
         // String letterGrade = computeLetterGrade(finalScore); // Calculate letter grade but do NOT persist it here.
@@ -492,11 +517,44 @@ public class GradeService {
         Section section = sectionStore.findById(sectionId);
         return section != null && section.getInstructorId() == sessionManager.getCurrentUserId();
     }
+    // Inside GradeService.java
+
+// ... (existing methods above) ...
+
+/**
+ * Retrieves a list of all FINAL grades (with scores) for every student in a given section.
+ * Required by GradeStatsService.
+ */
+public List<Grade> getFinalGradesBySection(int sectionId) {
+    // FIX: This uses the non-static instance field 'enrollmentStore'
+    // ASSUMING your method in EnrollmentStore is called findBySectionId(int)
+    List<Enrollment> enrollments = enrollmentStore.findBySection(sectionId); 
+    
+    List<Grade> finalGrades = new ArrayList<>();
+    
+    for (Enrollment enrollment : enrollments) {
+        // Use the non-static instance field 'gradeStore'
+        List<Grade> grades = gradeStore.findByEnrollment(enrollment.getEnrollmentId());
+        
+        // Filter for the "FINAL" component
+        grades.stream()
+              .filter(grade -> "FINAL".equals(grade.getComponent()))
+              .findFirst() 
+              .ifPresent(finalGrades::add);
+    }
+    
+    return finalGrades;
+}
+
+// ... (existing methods below) ...
 
     private String computeLetterGrade(double score) {
         if (score >= 90) return "A";
+        if(score>= 85) return "A-";
         if (score >= 80) return "B";
+        if (score >= 75) return "B-";
         if (score >= 70) return "C";
+        if (score >= 65) return "C-";
         if (score >= 60) return "D";
         return "F";
     }

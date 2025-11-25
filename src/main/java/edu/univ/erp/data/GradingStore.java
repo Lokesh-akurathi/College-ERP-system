@@ -1,15 +1,17 @@
 package edu.univ.erp.data;
 
+import edu.univ.erp.domain.GradeStats;
 import edu.univ.erp.domain.GradingCriteria;
 import edu.univ.erp.util.DatabaseConfig;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GradingStore {
 
-    /** Fetches all grading criteria for a given section. */
+    
     public List<GradingCriteria> findBySectionId(int sectionId) {
         List<GradingCriteria> criteriaList = new ArrayList<>();
         String sql = "SELECT criteria_id, section_id, component_name, weight_percentage, display_order " +
@@ -36,7 +38,7 @@ public class GradingStore {
         return criteriaList;
     }
 
-    /** Deletes all criteria for a section, preparing for update. */
+    
     public void deleteBySectionId(int sectionId) throws SQLException {
         String sql = "DELETE FROM grading_criteria WHERE section_id = ?";
         try (Connection conn = DatabaseConfig.getErpConnection();
@@ -46,8 +48,43 @@ public class GradingStore {
             pstmt.executeUpdate();
         }
     }
+    public List<Double> getFinalScoresBySection(int sectionId) {
+    List<Double> scores = new ArrayList<>();
 
-    /** Inserts a single grading component. */
+    String sql = 
+    "SELECT g.score " +
+    "FROM grades g " +
+    "JOIN enrollments e ON g.enrollment_id = e.enrollment_id " +
+    "WHERE e.section_id = ?";
+
+
+    try (Connection conn = DatabaseConfig.getErpConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, sectionId);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            scores.add(rs.getDouble("final_score"));
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return scores;
+}
+
+private String mapScoreToGrade(double score) {
+    if (score >= 90) return "A";
+    if (score >= 85) return "A-";
+    if (score >= 80) return "B";
+    if (score >= 75) return "B-";
+    if (score >= 70) return "C";
+    if (score >= 65) return "C-";
+    if (score >= 60) return "D";
+    return "F";
+}
+
+ 
     public void insertCriteria(Connection conn, GradingCriteria criteria) throws SQLException {
         String sql = "INSERT INTO grading_criteria (section_id, component_name, weight_percentage, display_order) " +
                      "VALUES (?, ?, ?, ?)";
@@ -61,28 +98,26 @@ public class GradingStore {
         }
     }
 
-    /** Core method to replace all criteria for a section in a transaction. */
     public boolean saveOrUpdateCriteria(int sectionId, List<GradingCriteria> criteriaList) {
         Connection conn = null;
         try {
             conn = DatabaseConfig.getErpConnection();
-            conn.setAutoCommit(false); // Start transaction
+            conn.setAutoCommit(false);
 
-            // 1. Delete existing criteria
             deleteBySectionId(sectionId); 
             
-            // 2. Insert new criteria
+
             for (GradingCriteria criteria : criteriaList) {
                 insertCriteria(conn, criteria);
             }
 
-            conn.commit(); // Commit transaction
+            conn.commit();
             return true;
         } catch (SQLException e) {
             System.err.println("Error saving grading criteria for section " + sectionId + ": " + e.getMessage());
             if (conn != null) {
                 try {
-                    conn.rollback(); // Rollback on error
+                    conn.rollback(); 
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -100,4 +135,6 @@ public class GradingStore {
             }
         }
     }
+    
+
 }

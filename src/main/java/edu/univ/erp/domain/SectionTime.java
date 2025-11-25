@@ -2,9 +2,9 @@ package edu.univ.erp.domain;
 
 public class SectionTime {
 
-    private String dayOfWeek;   // "Mon", "Tue", "Wed", ...
-    private String startTime;   // "09:00"
-    private String endTime;     // "10:30"
+    private String dayOfWeek;   
+    private String startTime;   
+    private String endTime;     
 
     public SectionTime() {}
 
@@ -14,7 +14,7 @@ public class SectionTime {
         this.endTime = endTime;
     }
 
-    // ---------- GETTERS / SETTERS ----------
+ 
 
     public String getDayOfWeek() {
         return dayOfWeek;
@@ -40,7 +40,7 @@ public class SectionTime {
         this.endTime = endTime;
     }
 
-    // ---------- Utility: toString() for UI table or dropdown ----------
+
 
     @Override
     public String toString() {

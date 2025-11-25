@@ -7,7 +7,7 @@ public class GradingCriteria {
     private double weightPercentage;
     private int displayOrder;
 
-    // Constructors
+
     public GradingCriteria() {}
     
     public GradingCriteria(int sectionId, String componentName, double weightPercentage, int displayOrder) {
@@ -17,7 +17,7 @@ public class GradingCriteria {
         this.displayOrder = displayOrder;
     }
 
-    // Getters and Setters
+ 
     public int getCriteriaId() { return criteriaId; }
     public void setCriteriaId(int criteriaId) { this.criteriaId = criteriaId; }
     

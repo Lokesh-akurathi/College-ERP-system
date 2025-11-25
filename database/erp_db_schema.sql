@@ -65,7 +65,7 @@ CREATE TABLE grades (
     UNIQUE(enrollment_id, component)
 );
 
--- GRADING CRITERIA (New table to store instructor-defined weights)
+
 CREATE TABLE grading_criteria (
     criteria_id SERIAL PRIMARY KEY,
     section_id INTEGER NOT NULL REFERENCES sections(section_id) ON DELETE CASCADE,
@@ -119,20 +119,18 @@ INSERT INTO enrollments (student_id, section_id, status) VALUES
 (4, 1, 'ACTIVE');
 
 
--- Criteria for Section 1 (CSE101: Intro to Programming)
+
 INSERT INTO grading_criteria (section_id, component_name, weight_percentage, display_order) VALUES
 (1, 'Homework', 20.00, 10),
 (1, 'Quiz', 15.00, 20),
 (1, 'Midsem', 30.00, 30),
 (1, 'Endsem', 35.00, 40);
--- Total weight is 20 + 15 + 30 + 35 = 100.00%
 
--- Criteria for Section 2 (CSE201: Data Structures) - Optional, for testing
 INSERT INTO grading_criteria (section_id, component_name, weight_percentage, display_order) VALUES
 (2, 'Lab Reports', 40.00, 10),
 (2, 'Midsem', 30.00, 20),
 (2, 'Endsem', 30.00, 30);
--- Total weight is 40 + 30 + 30 = 100.00%
+
 
 INSERT INTO settings (key, value) VALUES
 ('maintenance_on', 'false');
