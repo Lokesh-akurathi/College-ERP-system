@@ -5,6 +5,28 @@ A desktop application built with Java Swing and JDBC for managing university cou
 ## 🖥️ Important Note
 **This is a Desktop GUI Application** that requires a graphical display environment (X11/Windows/macOS). It **cannot run in a web browser** or headless cloud environment like Replit. To use this application, please clone the repository and run it locally on your computer.
 
+### Architecture
+```
+┌─────────────────┐
+│   Swing UI      │  (Login, Dashboards, Forms)
+└────────┬────────┘
+         │
+┌────────┴────────┐
+│  Service Layer  │  (Business Logic, Access Control)
+└────────┬────────┘
+         │
+┌────────┴────────┐
+│   Data Layer    │  (JDBC, Database Access)
+└────────┬────────┘
+         │
+┌────────┴────────────────┐
+│  PostgreSQL Databases   │
+│  ├─ Auth DB             │  (users_auth)
+│  └─ ERP DB              │  (students, courses, etc.)
+└─────────────────────────┘
+```
+
+
 ## Features
 
 - **Role-based Access Control**: Student, Instructor, and Admin roles with specific permissions
@@ -20,6 +42,15 @@ A desktop application built with Java Swing and JDBC for managing university cou
 - Java 11 or higher
 - PostgreSQL 12 or higher
 - Maven 3.6 or higher
+
+### Database Connection Test - After installing postgreSQL
+```bash
+# Check PostgreSQL is running
+pg_isready
+
+# Verify connection details
+psql -h localhost -U postgres
+```
 
 ## Database Setup
 
@@ -54,11 +85,17 @@ erp.db.password=yourpassword
 mvn clean compile
 
 # Run the application
-mvn exec:java -Dexec.mainClass="edu.univ.erp.Main"
+mvn exec:java "-Dexec.mainClass=edu.univ.erp.Main"
 
 # Or build a JAR
 mvn clean package
 java -jar target/university-erp-1.0-SNAPSHOT.jar
+```
+
+### Alternately you can build and run project with run.sh script if you are using `linux` or `wsl` or If you have `Git bash` installed in windows
+- NOTE: Before running you must have completed creation of `auth_db` and `erp_db`
+```bash
+    ./run.sh
 ```
 
 ## Default Accounts
@@ -90,10 +127,12 @@ src/main/java/edu/univ/erp/
 └── util/                        # Utilities (CSV, PDF, validation)
 ```
 
-## Testing
+### Local Deployment
+1. Install Java 11+
+2. Install PostgreSQL
+3. Create database
+4. Run schema scripts
+5. Build with Maven
+6. Run JAR file
 
-See `docs/TestPlan.md` for complete testing instructions.
-
-## License
-
-Academic project for educational purposes.
+### You can check detailed architecture of this Project in docs folder `/docs/ARCHITECTURE.md` of this project.
