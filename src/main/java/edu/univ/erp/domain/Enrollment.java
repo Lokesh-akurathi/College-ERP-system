@@ -15,15 +15,17 @@ public class Enrollment {
     private String sectionDayTime;
     private String sectionRoom;
     private String instructorName;
+    private String rollNumber;
     private int instructorId;
 
     public Enrollment() {}
 
-    public Enrollment(int enrollmentId, int studentId, int sectionId, String status) {
+    public Enrollment(int enrollmentId, int studentId, int sectionId, String status, String rollNumber) {
         this.enrollmentId = enrollmentId;
         this.studentId = studentId;
         this.sectionId = sectionId;
         this.status = status;
+        this.rollNumber = rollNumber;
     }
 
     public int getEnrollmentId() {
@@ -117,14 +119,21 @@ public class Enrollment {
     public void setInstructorId(int instructorId) {
     this.instructorId = instructorId;
 }
+public String getRollNumber() {
+    return rollNumber;
+}
+
+public void setRollNumber(String rollNumber) {
+    this.rollNumber = rollNumber;
+}
 
     @Override
-    public String toString() {
-        return "Enrollment{" +
-                "enrollmentId=" + enrollmentId +
-                ", studentId=" + studentId +
-                ", sectionId=" + sectionId +
-                ", status='" + status + '\'' +
-                '}';
-    }
+public String toString() {
+    return "Enrollment{" +
+            "rollNo='" + rollNumber + '\'' +
+            ", courseCode='" + courseCode + '\'' +
+            ", sectionId=" + sectionId +
+            '}';
+}
+
 }

@@ -207,7 +207,7 @@ public class PDFExporter {
         }
 
         // Use the Student ID from the first enrollment for the header (assuming all enrollments belong to the same student)
-        int studentId = enrollments.get(0).getStudentId(); 
+        String rollNumber = enrollments.get(0).getRollNumber(); 
         
         // Variables for CGPA Calculation
         double totalGradePoints = 0.0;
@@ -223,7 +223,7 @@ public class PDFExporter {
             // 2. Add Title and Student Info
             document.add(new Paragraph("Official Student Transcript", TITLE_FONT));
             // UPDATED: Use Student ID from the enrollment list
-            document.add(new Paragraph("Student ID: " + studentId, DATA_FONT)); 
+            document.add(new Paragraph("Roll Number: " + rollNumber, DATA_FONT)); 
             document.add(new Paragraph(" ")); // Blank line
 
             // 3. Create the table structure (5 columns, "Final Score" removed)
