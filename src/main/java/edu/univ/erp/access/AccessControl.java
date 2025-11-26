@@ -12,6 +12,11 @@ public class AccessControl {
         return "true".equalsIgnoreCase(value);
     }
 
+    public static boolean isAddDropPeriod() {
+        String value = settingsStore.getSetting("add_drop_period_on");
+        return "true".equalsIgnoreCase(value);
+    }
+
     public static boolean canModify() {
         if (isMaintenanceMode()) {
             String role = sessionManager.getCurrentRole();
@@ -50,5 +55,9 @@ public class AccessControl {
 
     public static String getAccessDeniedMessage() {
         return "Access Denied. You do not have permission for this action.";
+    }
+
+    public static String getAddDropDeniedMessage() {
+        return "Add/Drop Period is over. Only viewing is allowed.";
     }
 }

@@ -13,6 +13,7 @@ public class AdminDashboard extends JFrame {
     private final AuthService authService;
     private final JPanel mainPanel;
     private final JPanel bannerPanel;
+    private final Runnable refreshCallback;
 
     public AdminDashboard() {
         this.authService = new AuthService();
@@ -29,6 +30,19 @@ public class AdminDashboard extends JFrame {
             bannerPanel.add(new MaintenanceBanner(), BorderLayout.NORTH);
         }
         add(bannerPanel, BorderLayout.NORTH);
+
+        refreshCallback = () -> SwingUtilities.invokeLater(() -> {
+            // update top maintenance banner
+            refreshMaintenanceBanner();
+
+            // if the currently displayed main panel implements Refreshable, call its refresh()
+//            if (mainPanel.getComponentCount() > 0) {
+//                Component c = mainPanel.getComponent(0);
+//                if (c instanceof Refreshable) {
+//                    ((Refreshable) c).refresh();
+//                }
+//            }
+        });
 
         JPanel sidebarPanel = new JPanel();
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
@@ -52,7 +66,7 @@ public class AdminDashboard extends JFrame {
         addMenuButton(sidebarPanel, "Manage Users", () -> showManageUsers());
         addMenuButton(sidebarPanel, "Manage Courses", () -> showManageCourses());
         addMenuButton(sidebarPanel, "Manage Sections", () -> showManageSections());
-        addMenuButton(sidebarPanel, "Maintenance Mode", () -> showMaintenanceMode());
+        addMenuButton(sidebarPanel, "Settings panel", () -> showSettings());
         
         sidebarPanel.add(Box.createVerticalGlue());
         
@@ -108,6 +122,13 @@ public class AdminDashboard extends JFrame {
     private void showManageSections() {
         mainPanel.removeAll();
         mainPanel.add(new ManageSectionsPanel(), BorderLayout.CENTER);
+        mainPanel.revalidate();
+        mainPanel.repaint();
+    }
+
+    private void showSettings() {
+        mainPanel.removeAll();
+        mainPanel.add(new AdminSettingsPanel(refreshCallback), BorderLayout.CENTER);
         mainPanel.revalidate();
         mainPanel.repaint();
     }

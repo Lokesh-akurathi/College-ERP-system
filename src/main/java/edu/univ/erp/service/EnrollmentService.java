@@ -29,6 +29,10 @@ public class EnrollmentService {
             return AccessControl.getMaintenanceDenialMessage();
         }
 
+        if(!AccessControl.isAddDropPeriod()){
+            return AccessControl.getAddDropDeniedMessage();
+        }
+
         int studentId = sessionManager.getCurrentUserId();
 
         if (enrollmentStore.exists(studentId, sectionId)) {
@@ -63,6 +67,10 @@ public class EnrollmentService {
 
         if (!AccessControl.canModify()) {
             return AccessControl.getMaintenanceDenialMessage();
+        }
+
+        if(!AccessControl.isAddDropPeriod()){
+            return AccessControl.getAddDropDeniedMessage();
         }
 
         int studentId = sessionManager.getCurrentUserId();

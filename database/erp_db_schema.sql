@@ -133,4 +133,5 @@ INSERT INTO grading_criteria (section_id, component_name, weight_percentage, dis
 
 
 INSERT INTO settings (key, value) VALUES
-('maintenance_on', 'false');
+('maintenance_on', 'false'),
+('add_drop_period_on','true');
