@@ -91,4 +91,17 @@ public class EnrollmentService {
     public List<Enrollment> getEnrollmentsBySection(int sectionId) {
         return enrollmentStore.findBySection(sectionId);
     }
+    public String validateRollNumberForEnrollment(int enrollmentId, String rollNumber) {
+   
+     String actualRoll = enrollmentStore.findRollNumberByEnrollmentId(enrollmentId);
+    if (actualRoll == null) {
+        return "Enrollment ID does not exist.";
+    }
+    if (!actualRoll.equals(rollNumber)) {
+        return "Roll number mismatch (Expected: " + actualRoll + ").";
+    }
+    
+
+    return null;
+}
 }

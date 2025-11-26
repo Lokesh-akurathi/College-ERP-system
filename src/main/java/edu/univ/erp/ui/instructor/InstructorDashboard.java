@@ -14,12 +14,12 @@ public class InstructorDashboard extends JFrame {
     private final AuthService authService;
     private final JPanel mainPanel;
     private final JPanel bannerPanel;
-    // Store current user to easily retrieve their ID for service calls
+ 
     private final User currentUser; 
 
     public InstructorDashboard() {
         this.authService = new AuthService();
-        this.currentUser = authService.getCurrentUser(); // Store the user object
+        this.currentUser = authService.getCurrentUser(); 
         
         setTitle("Instructor Dashboard - " + currentUser.getUsername());
         setSize(900, 600);
@@ -52,11 +52,11 @@ public class InstructorDashboard extends JFrame {
         sidebarPanel.add(userLabel);
         sidebarPanel.add(Box.createRigidArea(new Dimension(0, 30)));
 
-        // --- NEW BUTTON ADDED HERE ---
+
         addMenuButton(sidebarPanel, "My Sections", () -> showMySections());
         addMenuButton(sidebarPanel, "Grade Entry", () -> showGradeEntry());
         addMenuButton(sidebarPanel, "Manage Grading Criteria", () -> showManageGrading());
-        // -----------------------------
+
         
         sidebarPanel.add(Box.createVerticalGlue());
         
@@ -97,7 +97,7 @@ public class InstructorDashboard extends JFrame {
 
     private void showMySections() {
         mainPanel.removeAll();
-        // NOTE: MySectionsPanel needs a constructor that accepts the instructorId if it uses it.
+        
         mainPanel.add(new MySectionsPanel(), BorderLayout.CENTER); 
         mainPanel.revalidate();
         mainPanel.repaint();
@@ -105,18 +105,16 @@ public class InstructorDashboard extends JFrame {
 
     private void showGradeEntry() {
         mainPanel.removeAll();
-        // NOTE: GradeEntryPanel needs a constructor that accepts the instructorId if it uses it.
+        
         mainPanel.add(new GradeEntryPanel(), BorderLayout.CENTER); 
         mainPanel.revalidate();
         mainPanel.repaint();
     }
 
-    /**
-     * NEW METHOD: Displays the ManageGradingPanel
-     */
+   
     private void showManageGrading() {
         mainPanel.removeAll();
-        // Pass the current user's ID to the panel so it can fetch the correct sections.
+
         mainPanel.add(new ManageGradingPanel(currentUser.getUserId()), BorderLayout.CENTER); 
         mainPanel.revalidate();
         mainPanel.repaint();

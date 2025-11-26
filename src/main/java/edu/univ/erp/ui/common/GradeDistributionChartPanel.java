@@ -15,7 +15,6 @@ public class GradeDistributionChartPanel extends JPanel {
     public GradeDistributionChartPanel(Map<String, Integer> gradeCounts) {
         this.gradeCounts = gradeCounts;
         
-        // Define colors for consistency
         colorMap.put("A", new Color(0, 150, 0));      // Dark Green
         colorMap.put("A-", new Color(50, 200, 50));   // Light Green
         colorMap.put("B", new Color(0, 150, 255));    // Blue
@@ -40,39 +39,36 @@ public class GradeDistributionChartPanel extends JPanel {
             return;
         }
 
-        // --- Chart Parameters ---
-        // Size and position for the pie chart
-        int chartSize = Math.min(getWidth(), getHeight()) - 100; // Leave space for the legend
+       
+        int chartSize = Math.min(getWidth(), getHeight()) - 100; 
         int chartX = 10;
         int chartY = 10;
         
         float startAngle = 0;
-        int legendX = chartX + chartSize + 30; // Start legend to the right of the chart
+        int legendX = chartX + chartSize + 30;
         int legendY = 30;
 
-        // --- Draw Pie Chart and Legend ---
+       
         for (Map.Entry<String, Integer> entry : gradeCounts.entrySet()) {
             String grade = entry.getKey();
             int count = entry.getValue();
             float angle = (count * 360.0f) / totalStudents;
             Color color = colorMap.getOrDefault(grade, Color.GRAY);
 
-            // 1. Draw Pie Slice
+          
             g2.setColor(color);
             g2.fill(new Arc2D.Float(chartX, chartY, chartSize, chartSize, startAngle, angle, Arc2D.PIE));
             
-            // 2. Draw Legend Entry
-            g2.setColor(Color.BLACK); // Use black text for contrast
+           
+            g2.setColor(Color.BLACK); 
             
-            // Color box for the grade
+           
             g2.setColor(color);
             g2.fillRect(legendX, legendY - 8, 16, 16); 
             
-            // Legend Label (Grade and Count)
             String label = String.format("%s (%d students)", grade, count);
             g2.drawString(label, legendX + 25, legendY + 5);
             
-            // Move down for the next legend entry
             legendY += 25;
             
             startAngle += angle;
