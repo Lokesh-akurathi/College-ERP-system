@@ -1,12 +1,12 @@
 package edu.univ.erp.data;
 
-import edu.univ.erp.domain.GradeStats;
+
 import edu.univ.erp.domain.GradingCriteria;
 import edu.univ.erp.util.DatabaseConfig;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
 
 public class GradingStore {

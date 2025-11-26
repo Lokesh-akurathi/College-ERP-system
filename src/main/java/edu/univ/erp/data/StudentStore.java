@@ -12,7 +12,7 @@ public class StudentStore {
 
    
     public Student findById(int userId) {
-        String sql = "SELECT user_id, roll_no, program, year FROM students WHERE user_id = ?";
+        String sql = "SELECT user_id, roll_no, program, year, first_name, last_name FROM students WHERE user_id = ?";
 
         try (Connection conn = DatabaseConfig.getErpConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -26,6 +26,8 @@ public class StudentStore {
                 student.setRollNo(rs.getString("roll_no"));
                 student.setProgram(rs.getString("program"));
                 student.setYear(rs.getInt("year"));
+                student.setFirstName(rs.getString("first_name"));
+                student.setLastName(rs.getString("last_name"));
                
                 return student;
             }
@@ -37,27 +39,31 @@ public class StudentStore {
 
    
     public boolean create(Student student) {
-        String sql = "INSERT INTO students (user_id, roll_no, program, year) VALUES (?, ?, ?, ?)";
+    String sql = "INSERT INTO students (user_id, roll_no, first_name, last_name, program, year) " +
+                 "VALUES (?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = DatabaseConfig.getErpConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    try (Connection conn = DatabaseConfig.getErpConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, student.getUserId());
-            pstmt.setString(2, student.getRollNo());
-            pstmt.setString(3, student.getProgram());
-            pstmt.setInt(4, student.getYear());
+        pstmt.setInt(1, student.getUserId());
+        pstmt.setString(2, student.getRollNo());
+        pstmt.setString(3, student.getFirstName());
+        pstmt.setString(4, student.getLastName());
+        pstmt.setString(5, student.getProgram());
+        pstmt.setInt(6, student.getYear());
 
-            return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return pstmt.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
     }
+}
+
 
     
     public List<Student> findAll() {
         List<Student> students = new ArrayList<>();
-        String sql = "SELECT user_id, roll_no, program, year FROM students";
+        String sql = "SELECT user_id, roll_no, program, year, first_name, last_name FROM students";
 
         try (Connection conn = DatabaseConfig.getErpConnection();
              Statement stmt = conn.createStatement();
@@ -69,6 +75,8 @@ public class StudentStore {
                 student.setRollNo(rs.getString("roll_no"));
                 student.setProgram(rs.getString("program"));
                 student.setYear(rs.getInt("year"));
+                student.setFirstName(rs.getString("first_name"));
+                student.setLastName(rs.getString("last_name"));
                 students.add(student);
             }
         } catch (SQLException e) {

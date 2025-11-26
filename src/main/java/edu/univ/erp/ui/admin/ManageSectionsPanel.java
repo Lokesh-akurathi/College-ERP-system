@@ -1,7 +1,8 @@
 
 package edu.univ.erp.ui.admin;
 
-import edu.univ.erp.data.InstructorStore;
+import edu.univ.erp.service.InstructorService;
+
 import edu.univ.erp.domain.Course;
 import edu.univ.erp.domain.Instructor;
 import edu.univ.erp.domain.Section;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class ManageSectionsPanel extends JPanel {
     private final CourseService courseService;
-    private final InstructorStore instructorStore;
+    private final InstructorService instructorService;
     private final AdminService adminService;
     private final JTable table;
     private final DefaultTableModel tableModel;
@@ -53,7 +54,7 @@ public class ManageSectionsPanel extends JPanel {
 
     public ManageSectionsPanel() {
         this.courseService = new CourseService();
-        this.instructorStore = new InstructorStore();
+        this.instructorService = new InstructorService();
         this.adminService = new AdminService();
 
         setLayout(new BorderLayout(8, 8));
@@ -64,7 +65,7 @@ public class ManageSectionsPanel extends JPanel {
         add(titleLabel, BorderLayout.NORTH);
 
        
-        String[] columns = {"Section ID", "Course", "Instructor ID", "Day/Time", "Room",
+        String[] columns = {"Section ID", "Course", "Instructor", "Day/Time", "Room",
                 "Enrolled", "Capacity", "Semester", "Year"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override public boolean isCellEditable(int row, int column) { return false; }
@@ -269,19 +270,33 @@ public class ManageSectionsPanel extends JPanel {
         for (Course c : courseService.getAllCourses()) courseCombo.addItem(new CourseItem(c));
 
         instructorCombo.removeAllItems();
-        for (Instructor i : instructorStore.findAll()) instructorCombo.addItem(new InstructorItem(i));
+        for (Instructor i : instructorService.getAllInstructors()) instructorCombo.addItem(new InstructorItem(i));
     }
 
-    private void populateFormFromSelectedRow(int rowIndex) {
+   private void populateFormFromSelectedRow(int rowIndex) {
         try {
             selectedSectionId = Integer.parseInt(tableModel.getValueAt(rowIndex, 0).toString());
         } catch (Exception ex) {
             selectedSectionId = -1;
         }
+        
+       
+        Section sectionToPopulate = courseService.getAllSections()
+                .stream()
+                .filter(x -> x.getSectionId() == selectedSectionId)
+                .findFirst()
+                .orElse(null);
+
+        if (sectionToPopulate == null) {
+             clearFormSelection();
+             return;
+        }
+        
+        
+        int instructorId = sectionToPopulate.getInstructorId(); 
 
         String courseText = tableModel.getValueAt(rowIndex, 1).toString();
-        int instructorId = Integer.parseInt(tableModel.getValueAt(rowIndex, 2).toString());
-        String dayTime = tableModel.getValueAt(rowIndex, 3).toString(); 
+       
         String room = tableModel.getValueAt(rowIndex, 4).toString();
         String capacity = tableModel.getValueAt(rowIndex, 6).toString();
         String semester = tableModel.getValueAt(rowIndex, 7).toString();
@@ -300,6 +315,7 @@ public class ManageSectionsPanel extends JPanel {
         if (!courseSelected && courseCombo.getItemCount() > 0) courseCombo.setSelectedIndex(0);
 
         
+      
         boolean instSelected = false;
         for (int i = 0; i < instructorCombo.getItemCount(); i++) {
             InstructorItem it = instructorCombo.getItemAt(i);
@@ -318,23 +334,18 @@ public class ManageSectionsPanel extends JPanel {
 
         
         slotsTableModel.setRowCount(0);
-        Section s = courseService.getAllSections()
-                .stream()
-                .filter(x -> x.getSectionId() == selectedSectionId)
-                .findFirst()
-                .orElse(null);
-
-        if (s != null && s.getTimes() != null && !s.getTimes().isEmpty()) {
-            for (SectionTime st : s.getTimes()) {
+        
+       
+        
+        if (sectionToPopulate.getTimes() != null && !sectionToPopulate.getTimes().isEmpty()) {
+            for (SectionTime st : sectionToPopulate.getTimes()) {
                 slotsTableModel.addRow(new Object[]{st.getDayOfWeek(), st.getStartTime(), st.getEndTime()});
             }
-        } else {
+        } else if (sectionToPopulate.getDayTime() != null && !sectionToPopulate.getDayTime().isEmpty()) {
            
-            if (dayTime != null && !dayTime.isEmpty()) {
-                
-                slotsTableModel.addRow(new Object[]{"", dayTime, ""});
-            }
+             slotsTableModel.addRow(new Object[]{"N/A", sectionToPopulate.getDayTime(), ""});
         }
+        
 
         updateButton.setEnabled(true);
     }
@@ -501,7 +512,7 @@ public class ManageSectionsPanel extends JPanel {
             Object[] row = {
                     s.getSectionId(),
                     s.getCourseCode() + " - " + s.getCourseTitle(),
-                    s.getInstructorId(),
+                    s.getInstructorName(),
                     timesText,
                     s.getRoom(),
                     s.getEnrolled(),
@@ -524,10 +535,8 @@ public class ManageSectionsPanel extends JPanel {
         Instructor instructor;
         InstructorItem(Instructor instructor) { this.instructor = instructor; }
         @Override public String toString() {
-            if (instructor.getUsername() != null && !instructor.getUsername().isEmpty()) {
-                return instructor.getUsername() + " (ID: " + instructor.getUserId() + ")";
-            }
-            return "Instructor ID: " + instructor.getUserId();
+            String fullName = instructor.getSalutation() + " " + instructor.getFirstName() + " " + instructor.getLastName();
+            return fullName.trim();
         }
     }
 }

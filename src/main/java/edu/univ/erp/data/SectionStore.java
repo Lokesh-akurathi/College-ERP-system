@@ -1,4 +1,3 @@
-
 package edu.univ.erp.data;
 
 import edu.univ.erp.domain.Section;
@@ -11,8 +10,7 @@ import java.util.List;
 
 public class SectionStore {
 
-  
-
+   
     private String formatSchedule(List<SectionTime> times) {
         if (times == null || times.isEmpty()) return "";
 
@@ -25,20 +23,26 @@ public class SectionStore {
               .append(t.getEndTime())
               .append(", ");
         }
+    
         return sb.substring(0, sb.length() - 2);
     }
-
-
-
 
     public Section findById(int sectionId) {
         String sql =
             "SELECT s.section_id, s.course_id, s.instructor_id, s.room, s.capacity, " +
             "s.semester, s.year, " +
             "c.code AS course_code, c.title AS course_title, c.credits AS course_credits, " +
+            
+           
+            "COALESCE(i.salutation || ' ', '') || i.first_name || ' ' || i.last_name AS instructor_name, " +
+            
             "(SELECT COUNT(*) FROM enrollments e WHERE e.section_id = s.section_id AND e.status='ACTIVE') AS enrolled " +
             "FROM sections s " +
             "JOIN courses c ON s.course_id = c.course_id " +
+            
+         
+            "JOIN instructors i ON s.instructor_id = i.user_id " +
+            
             "WHERE s.section_id = ?";
 
         try (Connection conn = DatabaseConfig.getErpConnection();
@@ -54,7 +58,6 @@ public class SectionStore {
                 section.setTimes(times);
                 section.setDayTime(formatSchedule(times));
 
-                section.setInstructorName(fetchInstructorName(section.getInstructorId()));
                 return section;
             }
 
@@ -64,6 +67,7 @@ public class SectionStore {
 
         return null;
     }
+
     public boolean canDeleteSection(int sectionId) {
         String sql = "SELECT COUNT(*) FROM enrollments WHERE section_id = ?";
 
@@ -82,8 +86,7 @@ public class SectionStore {
         return false;
     }
 
-
-
+   
     public List<Section> findAll() {
         List<Section> sections = new ArrayList<>();
 
@@ -91,9 +94,17 @@ public class SectionStore {
             "SELECT s.section_id, s.course_id, s.instructor_id, s.room, s.capacity, " +
             "s.semester, s.year, " +
             "c.code AS course_code, c.title AS course_title, c.credits AS course_credits, " +
+            
+            
+            "COALESCE(i.salutation || ' ', '') || i.first_name || ' ' || i.last_name AS instructor_name, " +
+
             "(SELECT COUNT(*) FROM enrollments e WHERE e.section_id = s.section_id AND e.status='ACTIVE') AS enrolled " +
             "FROM sections s " +
             "JOIN courses c ON s.course_id = c.course_id " +
+            
+            
+            "JOIN instructors i ON s.instructor_id = i.user_id " +
+            
             "ORDER BY c.code, s.section_id";
 
         try (Connection conn = DatabaseConfig.getErpConnection();
@@ -107,7 +118,7 @@ public class SectionStore {
                 section.setTimes(times);
                 section.setDayTime(formatSchedule(times));
 
-                section.setInstructorName(fetchInstructorName(section.getInstructorId()));
+               
                 sections.add(section);
             }
 
@@ -118,8 +129,7 @@ public class SectionStore {
         return sections;
     }
 
-
-
+   
     public List<Section> findByInstructor(int instructorId) {
         List<Section> sections = new ArrayList<>();
 
@@ -127,9 +137,17 @@ public class SectionStore {
             "SELECT s.section_id, s.course_id, s.instructor_id, s.room, s.capacity, " +
             "s.semester, s.year, " +
             "c.code AS course_code, c.title AS course_title, c.credits AS course_credits, " +
+            
+            
+            "COALESCE(i.salutation || ' ', '') || i.first_name || ' ' || i.last_name AS instructor_name, " +
+            
             "(SELECT COUNT(*) FROM enrollments e WHERE e.section_id = s.section_id AND e.status='ACTIVE') AS enrolled " +
             "FROM sections s " +
             "JOIN courses c ON s.course_id = c.course_id " +
+            
+            
+            "JOIN instructors i ON s.instructor_id = i.user_id " +
+            
             "WHERE s.instructor_id = ? " +
             "ORDER BY c.code";
 
@@ -146,7 +164,7 @@ public class SectionStore {
                 section.setTimes(times);
                 section.setDayTime(formatSchedule(times));
 
-                section.setInstructorName(fetchInstructorName(section.getInstructorId()));
+                
                 sections.add(section);
             }
 
@@ -156,8 +174,6 @@ public class SectionStore {
 
         return sections;
     }
-
-
 
     public boolean create(Section section) {
         String sql =
@@ -196,9 +212,7 @@ public class SectionStore {
         return false;
     }
 
-
-
-
+   
     public boolean update(Section section) {
         String sql =
             "UPDATE sections SET course_id = ?, instructor_id = ?, room = ?, capacity = ?, semester = ?, year = ? " +
@@ -218,6 +232,7 @@ public class SectionStore {
             boolean ok = pstmt.executeUpdate() > 0;
             if (!ok) return false;
 
+            
             deleteSectionTimes(section.getSectionId());
             for (SectionTime t : section.getTimes()) {
                 insertSectionTime(section.getSectionId(), t);
@@ -231,9 +246,6 @@ public class SectionStore {
             return false;
         }
     }
-
-
-
 
     public boolean deleteSection(int sectionId) {
         deleteSectionTimes(sectionId);
@@ -252,7 +264,6 @@ public class SectionStore {
         }
     }
 
-
     public boolean deleteSectionTimes(int sectionId) {
         String sql = "DELETE FROM section_times WHERE section_id = ?";
 
@@ -268,7 +279,6 @@ public class SectionStore {
             return false;
         }
     }
-
 
     private List<SectionTime> fetchSectionTimes(int sectionId) {
         List<SectionTime> times = new ArrayList<>();
@@ -298,41 +308,33 @@ public class SectionStore {
         return times;
     }
 
+    private void insertSectionTime(int sectionId, SectionTime time) throws SQLException {
+        String sql =
+            "INSERT INTO section_times (section_id, day_of_week, start_time, end_time) " +
+            "VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseConfig.getErpConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, sectionId);
+            pstmt.setString(2, time.getDayOfWeek());
+
+           
+            String startTimeStr = time.getStartTime();
+            String endTimeStr = time.getEndTime();
+
+          
+            java.time.LocalTime localStartTime = java.time.LocalTime.parse(startTimeStr);
+            java.time.LocalTime localEndTime = java.time.LocalTime.parse(endTimeStr);
+
+            pstmt.setTime(3, Time.valueOf(localStartTime));
+            pstmt.setTime(4, Time.valueOf(localEndTime));
+
+            pstmt.executeUpdate();
+        } 
+    }
 
    
-
-
-private void insertSectionTime(int sectionId, SectionTime time) throws SQLException {
-    String sql =
-        "INSERT INTO section_times (section_id, day_of_week, start_time, end_time) " +
-        "VALUES (?, ?, ?, ?)";
-
-    try (Connection conn = DatabaseConfig.getErpConnection();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-        pstmt.setInt(1, sectionId);
-        pstmt.setString(2, time.getDayOfWeek());
-
-        
-        String startTimeStr = time.getStartTime();
-        String endTimeStr = time.getEndTime();
-        
-       
-        java.time.LocalTime localStartTime = java.time.LocalTime.parse(startTimeStr);
-        java.time.LocalTime localEndTime = java.time.LocalTime.parse(endTimeStr);
-        
-        
-        pstmt.setTime(3, Time.valueOf(localStartTime));
-        pstmt.setTime(4, Time.valueOf(localEndTime));
-        
-       
-
-        pstmt.executeUpdate();
-    } 
-}
-
-  
-
     private Section map(ResultSet rs) throws SQLException {
         Section section = new Section();
         section.setSectionId(rs.getInt("section_id"));
@@ -346,27 +348,12 @@ private void insertSectionTime(int sectionId, SectionTime time) throws SQLExcept
         section.setCourseTitle(rs.getString("course_title"));
         section.setCourseCredits(rs.getInt("course_credits"));
         section.setEnrolled(rs.getInt("enrolled"));
+        
+      
+        section.setInstructorName(rs.getString("instructor_name")); 
+        
         return section;
     }
-
-
-   
-
-    private String fetchInstructorName(int instructorId) {
-        String sql = "SELECT username FROM users_auth WHERE user_id = ?";
-
-        try (Connection conn = DatabaseConfig.getAuthConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, instructorId);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) return rs.getString("username");
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return "Unknown";
-    }
+    
+    
 }

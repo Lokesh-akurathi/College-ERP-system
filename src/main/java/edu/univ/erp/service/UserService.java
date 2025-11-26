@@ -19,7 +19,7 @@ public class UserService {
         this.instructorStore = new InstructorStore();
     }
 
-    public String createStudent(String username, String password, String rollNo, String program, int year) {
+    public String createStudent(String username, String password, String rollNo, String program, int year, String firstName, String lastName) {
         if (!AccessControl.canAccessAdminFeatures()) {
             return AccessControl.getAccessDeniedMessage();
         }
@@ -39,6 +39,8 @@ public class UserService {
         }
 
         Student student = new Student(userId, rollNo, program, year);
+        student.setFirstName(firstName);
+        student.setLastName(lastName);
         if (studentStore.create(student)) {
             return null;
         } else {
@@ -46,7 +48,7 @@ public class UserService {
         }
     }
 
-    public String createInstructor(String username, String password, String department) {
+    public String createInstructor(String username, String password, String department, String firstName, String lastName , String salutation) {
         if (!AccessControl.canAccessAdminFeatures()) {
             return AccessControl.getAccessDeniedMessage();
         }
@@ -66,6 +68,9 @@ public class UserService {
         }
 
         Instructor instructor = new Instructor(userId, department);
+         instructor.setSalutation(salutation);
+        instructor.setFirstName(firstName);
+        instructor.setLastName(lastName);
         if (instructorStore.create(instructor)) {
             return null;
         } else {
@@ -89,4 +94,5 @@ public class UserService {
             return "Failed to create admin account.";
         }
     }
+    
 }

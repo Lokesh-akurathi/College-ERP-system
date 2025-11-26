@@ -4,6 +4,9 @@ public class Instructor {
     private int userId;
     private String department;
     private String username;
+    private String salutation;
+    private String firstName;
+    private String lastName;
 
     public Instructor() {}
 
@@ -35,12 +38,17 @@ public class Instructor {
     public void setUsername(String username) {
         this.username = username;
     }
-
+    public String getFullName() {
+    return (salutation != null ? salutation + " " : "") + firstName + " " + lastName;
+}
+    public String getSalutation() { return salutation; }
+    public void setSalutation(String salutation) { this.salutation = salutation; }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
     @Override
     public String toString() {
-        return "Instructor{" +
-                "userId=" + userId +
-                ", department='" + department + '\'' +
-                '}';
+        return getFullName();
     }
 }

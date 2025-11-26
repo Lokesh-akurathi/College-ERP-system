@@ -17,6 +17,7 @@ public class Enrollment {
     private String instructorName;
     private String rollNumber;
     private int instructorId;
+    private String studentName;
     
 
     public Enrollment() {}
@@ -120,6 +121,14 @@ public class Enrollment {
     public void setInstructorId(int instructorId) {
     this.instructorId = instructorId;
 }
+
+
+
+public String getStudentName() { return studentName; }
+public void setStudentName(String studentName) { this.studentName = studentName; }
+
+
+
 public String getRollNumber() {
     return rollNumber;
 }

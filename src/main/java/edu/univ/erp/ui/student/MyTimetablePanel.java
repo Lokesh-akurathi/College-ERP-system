@@ -21,7 +21,7 @@ public class MyTimetablePanel extends JPanel {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         add(titleLabel, BorderLayout.NORTH);
 
-        String[] columns = {"Course Code", "Course Title", "Day/Time", "Room"};
+        String[] columns = {"Course Code", "Course Title", "Day/Time", "Room", "Instructor"};
         DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -35,7 +35,9 @@ public class MyTimetablePanel extends JPanel {
                 enrollment.getCourseCode(),
                 enrollment.getCourseTitle(),
                 enrollment.getSectionDayTime(),
-                enrollment.getSectionRoom()            };
+                enrollment.getSectionRoom(),
+                enrollment.getInstructorName()
+            };
             tableModel.addRow(row);
         }
 
