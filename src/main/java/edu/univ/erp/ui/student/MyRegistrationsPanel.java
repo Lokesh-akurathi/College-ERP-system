@@ -133,8 +133,7 @@ public class MyRegistrationsPanel extends JPanel {
                 "Title",
                 "Credits",
                 "Day/Time",
-                "Room",
-                "Instructor"
+                "Room"
         };
 
         tableModel = new DefaultTableModel(columns, 0) {
@@ -181,7 +180,6 @@ public class MyRegistrationsPanel extends JPanel {
                     enrollment.getCourseCredits(),
                     enrollment.getSectionDayTime(),
                     enrollment.getSectionRoom(),
-                    enrollment.getInstructorName()
             };
 
             // Store hidden enrollmentId safely

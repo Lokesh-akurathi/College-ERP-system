@@ -5,16 +5,16 @@ import edu.univ.erp.data.SectionStore;
 import edu.univ.erp.domain.Enrollment;
 import edu.univ.erp.domain.Grade;
 import edu.univ.erp.domain.Section;
-import edu.univ.erp.domain.GradingCriteria; // NEW
+import edu.univ.erp.domain.GradingCriteria;
 import edu.univ.erp.service.EnrollmentService;
 import edu.univ.erp.service.GradeService;
-import edu.univ.erp.service.InstructorService; // NEW
+import edu.univ.erp.service.InstructorService;
 import edu.univ.erp.ui.common.MessageDialog;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.ArrayList; // NEW
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,20 +23,20 @@ public class GradeEntryPanel extends JPanel {
     private final SectionStore sectionStore;
     private final EnrollmentService enrollmentService;
     private final GradeService gradeService;
-    private final InstructorService instructorService; // NEW: To fetch criteria
+    private final InstructorService instructorService; 
     
     private final JComboBox<SectionItem> sectionCombo;
     private final JTable table;
     private  DefaultTableModel tableModel;
 
-    // Stores the list of component names for the currently selected section
+    
     private List<GradingCriteria> currentCriteria; 
 
     public GradeEntryPanel() {
         this.sectionStore = new SectionStore();
         this.enrollmentService = new EnrollmentService();
         this.gradeService = new GradeService();
-        this.instructorService = new InstructorService(); // Initialize NEW service
+        this.instructorService = new InstructorService(); 
         
         setLayout(new BorderLayout());
 
@@ -44,7 +44,7 @@ public class GradeEntryPanel extends JPanel {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         
-        // --- TOP PANEL: Section Selection ---
+       
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(new JLabel("Select Section:"));
         
@@ -59,8 +59,8 @@ public class GradeEntryPanel extends JPanel {
         
         add(topPanel, BorderLayout.NORTH);
 
-        // Initialize table with temporary columns
-        String[] tempColumns = {"Enrollment ID", "Student ID", "Score 1", "Score 2", "Final Score", "Grade"};
+
+        String[] tempColumns = {"Enrollment ID", "Roll Number", "Score 1", "Score 2", "Final Score", "Grade"};
         tableModel = new DefaultTableModel(tempColumns, 0);
         table = new JTable(tableModel);
         table.setRowHeight(25);
@@ -84,7 +84,7 @@ public class GradeEntryPanel extends JPanel {
 
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Load data for the first item on initialization
+      
         if (sectionCombo.getItemCount() > 0) {
             loadStudents();
         }
@@ -96,64 +96,60 @@ private void loadStudents() {
 
     int sectionId = selectedItem.section.getSectionId();
     
-    // 1. Fetch criteria and update table columns
+   
     currentCriteria = instructorService.getGradingCriteria(sectionId);
     updateTableColumns();
 
-    // 2. Fetch enrollments
+
     List<Enrollment> enrollments = enrollmentService.getEnrollmentsBySection(sectionId);
     
-    // 3. Populate rows
+
     for (Enrollment enrollment : enrollments) {
         List<Grade> grades = gradeService.getGradesForEnrollment(enrollment.getEnrollmentId());
         
         Map<String, Double> scoreMap = new HashMap<>();
-        String finalGrade = ""; // Letter grade (A, B, C, etc.)
-        Double finalScore = null; // Numerical final score (0.0 to 100.0)
+        String finalGrade = "";
+        Double finalScore = null; 
         
         for (Grade grade : grades) {
-            // Note: Component names from the database are UPPERCASE (e.g., "HOMEWORK", "FINAL")
+            
             String componentKey = grade.getComponent(); 
             
             if (grade.getScore() != null) {
-                // Map all component scores
                 scoreMap.put(componentKey, grade.getScore()); 
             }
-            
-            // Check for the FINAL score component
             if ("FINAL".equals(componentKey)) {
                 finalScore = grade.getScore();
-                
-                // CRITICAL FIX: Calculate the letter grade using the score, 
-                // since getFinalGrade() is removed.
+
                 if (finalScore != null) { 
                     finalGrade = gradeService.getLetterGrade(finalScore); 
                 }
             }
         }
 
-        // Start of the dynamic row data (Enrollment ID and Student ID)
+        
         List<Object> rowData = new ArrayList<>();
         rowData.add(enrollment.getEnrollmentId());
         rowData.add(enrollment.getRollNumber());
 
-        // Add scores dynamically based on currentCriteria
+        
         for (GradingCriteria criteria : currentCriteria) {
-            // CRITICAL: Ensure we check against the UPPERCASE component key from the database
+           
             String componentKey = criteria.getComponentName().toUpperCase();
             rowData.add(scoreMap.get(componentKey));
         }
 
-        // Add the final columns
+
         rowData.add(finalScore);
         rowData.add(finalGrade);
         
         tableModel.addRow(rowData.toArray());
     }
 }
-    // NEW METHOD: Dynamically updates the table columns based on the criteria
+   
+
     private void updateTableColumns() {
-    // 1. Prepare new column identifiers
+    
     List<String> dynamicColumns = new ArrayList<>();
     dynamicColumns.add("Enrollment ID");
     dynamicColumns.add("Roll Number");
@@ -166,20 +162,18 @@ private void loadStudents() {
     dynamicColumns.add("Final Score");
     dynamicColumns.add("Grade");
 
-    // 2. Create a NEW model instance with the data and the custom editability
-    // We use the raw Vector type to satisfy the constructor when dealing with getDataVector()
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+       @SuppressWarnings({ "unchecked", "rawtypes" })
     DefaultTableModel newModel = new DefaultTableModel((java.util.Vector) tableModel.getDataVector(), new java.util.Vector(dynamicColumns)) {
         
-        // This method is mandatory to allow non-String objects (like Double) in the model
+        
         @Override
         public Class<?> getColumnClass(int columnIndex) {
             int criteriaCount = currentCriteria.size();
-            // Columns 2 through 2 + criteriaCount - 1 (the dynamic score columns) are Double
+         
             if (columnIndex >= 2 && columnIndex < (2 + criteriaCount)) {
                 return Double.class;
             }
-            // Final Score column (next index) is also a Double
+          
             if (columnIndex == (2 + criteriaCount)) {
                 return Double.class;
             }
@@ -189,14 +183,14 @@ private void loadStudents() {
         @Override
         public boolean isCellEditable(int row, int column) {
             int criteriaCount = currentCriteria.size();
-            // Allow editing for the dynamic score columns (indices 2 up to 2 + criteriaCount - 1)
+       
             return column >= 2 && column < (2 + criteriaCount); 
         }
     };
     
-    // 3. Set the new model to the table and update the reference
+   
     table.setModel(newModel);
-    this.tableModel = newModel; // CRITICAL: Update the tableModel reference
+    this.tableModel = newModel; 
 }
 
     private void saveScores() {
@@ -206,13 +200,13 @@ private void loadStudents() {
             return;
         }
 
-        // The dynamic score columns start at index 2
+        
         int firstScoreColumnIndex = 2;
         
         for (int i = 0; i < table.getRowCount(); i++) {
             int enrollmentId = (int) table.getValueAt(i, 0);
             
-            // Loop through all dynamic score columns
+            
             for (int j = 0; j < currentCriteria.size(); j++) {
                 int column = firstScoreColumnIndex + j;
                 GradingCriteria criteria = currentCriteria.get(j);
