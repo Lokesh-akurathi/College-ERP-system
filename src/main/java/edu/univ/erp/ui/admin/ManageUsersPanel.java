@@ -38,19 +38,23 @@ public class ManageUsersPanel extends JPanel {
         JPasswordField passwordField = new JPasswordField(20);
         JTextField rollNoField = new JTextField(20);
         JTextField programField = new JTextField(20);
+        JTextField firstNameField = new JTextField(20);
+        JTextField lastNameField = new JTextField(20);
         JSpinner yearSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 5, 1));
 
         addFormField(panel, gbc, 0, "Username:", usernameField);
         addFormField(panel, gbc, 1, "Password:", passwordField);
         addFormField(panel, gbc, 2, "Roll Number:", rollNoField);
-        addFormField(panel, gbc, 3, "Program:", programField);
-        addFormField(panel, gbc, 4, "Year:", yearSpinner);
+        addFormField(panel, gbc, 3, "First Name:", firstNameField);
+        addFormField(panel, gbc, 4, "Last Name:", lastNameField);
+        addFormField(panel, gbc, 5, "Program:", programField);
+        addFormField(panel, gbc, 6, "Year:", yearSpinner);
 
         JButton createButton = new JButton("Create Student");
         createButton.setBackground(new Color(76, 175, 80));
         createButton.setForeground(Color.WHITE);
         gbc.gridx = 1;
-        gbc.gridy = 5;
+        gbc.gridy = 7;
         gbc.insets = new Insets(20, 10, 10, 10);
         panel.add(createButton, gbc);
 
@@ -59,6 +63,8 @@ public class ManageUsersPanel extends JPanel {
             String password = new String(passwordField.getPassword());
             String rollNo = rollNoField.getText().trim();
             String program = programField.getText().trim();
+            String firstName = firstNameField.getText().trim();
+            String lastName = lastNameField.getText().trim();
             int year = (int) yearSpinner.getValue();
 
             String validationError = ValidationHelper.validateUserData(username, password);
@@ -73,7 +79,7 @@ public class ManageUsersPanel extends JPanel {
                 return;
             }
 
-            String error = userService.createStudent(username, password, rollNo, program, year);
+            String error = userService.createStudent(username, password, rollNo, program, year, firstName, lastName);
             if (error == null) {
                 MessageDialog.showSuccess((JFrame) SwingUtilities.getWindowAncestor(this), 
                         "Student created successfully!");
@@ -81,6 +87,8 @@ public class ManageUsersPanel extends JPanel {
                 passwordField.setText("");
                 rollNoField.setText("");
                 programField.setText("");
+                firstNameField.setText("");
+                lastNameField.setText("");
                 yearSpinner.setValue(1);
             } else {
                 MessageDialog.showError((JFrame) SwingUtilities.getWindowAncestor(this), error);
@@ -99,16 +107,24 @@ public class ManageUsersPanel extends JPanel {
         JTextField usernameField = new JTextField(20);
         JPasswordField passwordField = new JPasswordField(20);
         JTextField departmentField = new JTextField(20);
+        JTextField salutationField = new JTextField(10);
+        JTextField firstNameField = new JTextField(20);
+        JTextField lastNameField = new JTextField(20);
+
 
         addFormField(panel, gbc, 0, "Username:", usernameField);
         addFormField(panel, gbc, 1, "Password:", passwordField);
-        addFormField(panel, gbc, 2, "Department:", departmentField);
+        addFormField(panel, gbc, 2, "Salutation:", salutationField);
+        addFormField(panel, gbc, 3, "First Name:", firstNameField);
+        addFormField(panel, gbc, 4, "Last Name:", lastNameField);
+        addFormField(panel, gbc, 5, "Department:", departmentField);
+
 
         JButton createButton = new JButton("Create Instructor");
         createButton.setBackground(new Color(76, 175, 80));
         createButton.setForeground(Color.WHITE);
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 6;
         gbc.insets = new Insets(20, 10, 10, 10);
         panel.add(createButton, gbc);
 
@@ -116,7 +132,9 @@ public class ManageUsersPanel extends JPanel {
             String username = usernameField.getText().trim();
             String password = new String(passwordField.getPassword());
             String department = departmentField.getText().trim();
-
+            String salutation = salutationField.getText().trim();
+            String firstName = firstNameField.getText().trim();
+            String lastName = lastNameField.getText().trim();
             String validationError = ValidationHelper.validateUserData(username, password);
             if (validationError != null) {
                 MessageDialog.showError((JFrame) SwingUtilities.getWindowAncestor(this), validationError);
@@ -129,13 +147,16 @@ public class ManageUsersPanel extends JPanel {
                 return;
             }
 
-            String error = userService.createInstructor(username, password, department);
+            String error = userService.createInstructor(username, password, department,firstName,lastName,salutation);
             if (error == null) {
                 MessageDialog.showSuccess((JFrame) SwingUtilities.getWindowAncestor(this), 
                         "Instructor created successfully!");
                 usernameField.setText("");
                 passwordField.setText("");
                 departmentField.setText("");
+                salutationField.setText("");
+                firstNameField.setText("");
+                lastNameField.setText("");
             } else {
                 MessageDialog.showError((JFrame) SwingUtilities.getWindowAncestor(this), error);
             }

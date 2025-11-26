@@ -1,3 +1,4 @@
+
 package edu.univ.erp.ui.student;
 
 import edu.univ.erp.domain.Enrollment;
@@ -24,13 +25,15 @@ public class MyRegistrationsPanel extends JPanel {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         add(titleLabel, BorderLayout.NORTH);
 
+       
         String[] columns = {
                 "Roll No",
                 "Code",
                 "Title",
                 "Credits",
                 "Day/Time",
-                "Room"
+                "Room",
+                "Instructor"
         };
 
         tableModel = new DefaultTableModel(columns, 0) {
@@ -77,8 +80,10 @@ public class MyRegistrationsPanel extends JPanel {
                     enrollment.getCourseCredits(),
                     enrollment.getSectionDayTime(),
                     enrollment.getSectionRoom(),
+                    enrollment.getInstructorName()
             };
 
+         
             table.putClientProperty("ENROLL_ID_" + tableModel.getRowCount(), enrollment.getEnrollmentId());
 
             tableModel.addRow(row);

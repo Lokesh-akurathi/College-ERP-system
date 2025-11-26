@@ -1,4 +1,3 @@
-
 package edu.univ.erp.data;
 
 import edu.univ.erp.domain.Instructor;
@@ -9,8 +8,10 @@ import java.util.List;
 
 public class InstructorStore {
 
+    // ================= FIND BY ID =================
     public Instructor findById(int userId) {
-        String sql = "SELECT user_id, department FROM instructors WHERE user_id = ?";
+        String sql = "SELECT user_id, salutation, first_name, last_name, department " +
+                     "FROM instructors WHERE user_id = ?";
 
         try (Connection conn = DatabaseConfig.getErpConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -21,8 +22,10 @@ public class InstructorStore {
             if (rs.next()) {
                 Instructor instructor = new Instructor();
                 instructor.setUserId(rs.getInt("user_id"));
+                instructor.setSalutation(rs.getString("salutation"));
+                instructor.setFirstName(rs.getString("first_name"));
+                instructor.setLastName(rs.getString("last_name"));
                 instructor.setDepartment(rs.getString("department"));
-                // username will be fetched separately from AuthStore
                 return instructor;
             }
         } catch (SQLException e) {
@@ -31,14 +34,19 @@ public class InstructorStore {
         return null;
     }
 
+    // ================= CREATE =================
     public boolean create(Instructor instructor) {
-        String sql = "INSERT INTO instructors (user_id, department) VALUES (?, ?)";
+        String sql = "INSERT INTO instructors (user_id, salutation, first_name, last_name, department) " +
+                     "VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConfig.getErpConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, instructor.getUserId());
-            pstmt.setString(2, instructor.getDepartment());
+            pstmt.setString(2, instructor.getSalutation());
+            pstmt.setString(3, instructor.getFirstName());
+            pstmt.setString(4, instructor.getLastName());
+            pstmt.setString(5, instructor.getDepartment());
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -47,9 +55,11 @@ public class InstructorStore {
         }
     }
 
+    // ================= FIND ALL =================
     public List<Instructor> findAll() {
         List<Instructor> instructors = new ArrayList<>();
-        String sql = "SELECT user_id, department FROM instructors";
+
+        String sql = "SELECT user_id, salutation, first_name, last_name, department FROM instructors";
 
         try (Connection conn = DatabaseConfig.getErpConnection();
              Statement stmt = conn.createStatement();
@@ -58,6 +68,9 @@ public class InstructorStore {
             while (rs.next()) {
                 Instructor instructor = new Instructor();
                 instructor.setUserId(rs.getInt("user_id"));
+                instructor.setSalutation(rs.getString("salutation"));
+                instructor.setFirstName(rs.getString("first_name"));
+                instructor.setLastName(rs.getString("last_name"));
                 instructor.setDepartment(rs.getString("department"));
                 instructors.add(instructor);
             }

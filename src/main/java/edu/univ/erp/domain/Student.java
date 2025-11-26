@@ -4,6 +4,8 @@ public class Student {
     private int userId;
     private String rollNo;
     private String program;
+    private String firstName;
+    private String lastName;
     private int year;
     private String username;
 
@@ -55,11 +57,19 @@ public class Student {
     public void setUsername(String username) {
         this.username = username;
     }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+
+    public String getFullName() {
+        return (firstName + " " + lastName).trim();
+    }
 
     @Override
     public String toString() {
         return "Student{" +
-                "userId=" + userId +
+                "Name=" + firstName + " " + lastName +
                 ", rollNo='" + rollNo + '\'' +
                 ", program='" + program + '\'' +
                 ", year=" + year +

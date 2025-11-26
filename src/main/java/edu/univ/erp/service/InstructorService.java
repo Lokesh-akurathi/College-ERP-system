@@ -7,7 +7,6 @@ import edu.univ.erp.data.GradingStore;
 import edu.univ.erp.data.SectionStore; 
 import edu.univ.erp.domain.Instructor;
 import edu.univ.erp.domain.Section;
-import edu.univ.erp.domain.GradeStats;
 import edu.univ.erp.domain.GradingCriteria;
 
 import java.util.List;
@@ -68,6 +67,9 @@ public class InstructorService {
         
         return gradingStore.saveOrUpdateCriteria(sectionId, criteriaList);
     }
-    
+    public List<Instructor> getAllInstructors() {
+    // This will call a corresponding method in your InstructorStore
+    return instructorStore.findAll(); 
+}
 
 }
