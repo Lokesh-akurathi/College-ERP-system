@@ -26,4 +26,21 @@ public class SettingsService {
     public boolean isMaintenanceMode() {
         return AccessControl.isMaintenanceMode();
     }
+
+    public String toggleAddDrop(boolean enable) {
+        if (!AccessControl.canAccessAdminFeatures()) {
+            return AccessControl.getAccessDeniedMessage();
+        }
+
+        String value = enable ? "true" : "false";
+        if (settingsStore.setSetting("add_drop_period_on", value)) {
+            return null;
+        } else {
+            return "Failed to toggle add drop period.";
+        }
+    }
+
+    public boolean isAddDropEnabled() {
+        return AccessControl.isAddDropPeriod();
+    }
 }
