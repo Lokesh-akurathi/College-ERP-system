@@ -2,12 +2,18 @@ package edu.univ.erp.domain;
 
 import java.time.LocalDateTime;
 
+
+
 public class User {
     private int userId;
     private String username;
     private String role;
     private String status;
     private LocalDateTime lastLogin;
+    private String firstName; 
+    private String lastName;
+    private int failedLoginAttempts;
+    private LocalDateTime lockoutUntil;
 
     public User() {}
 
@@ -62,6 +68,24 @@ public class User {
         return "ACTIVE".equals(status);
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    public String getLastName() {
+        return lastName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    public String getFullName() {
+        if (firstName != null && lastName != null && !firstName.isEmpty() && !lastName.isEmpty()) {
+            return firstName + " " + lastName;
+        }
+        return username; 
+    }
     @Override
     public String toString() {
         return "User{" +
@@ -70,5 +94,19 @@ public class User {
                 ", role='" + role + '\'' +
                 ", status='" + status + '\'' +
                 '}';
+    }
+    public int getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public void setFailedLoginAttempts(int failedLoginAttempts) {
+        this.failedLoginAttempts = failedLoginAttempts;
+    }
+    public LocalDateTime getLockoutUntil() {
+        return lockoutUntil;
+    }
+
+    public void setLockoutUntil(LocalDateTime lockoutUntil) {
+        this.lockoutUntil = lockoutUntil;
     }
 }

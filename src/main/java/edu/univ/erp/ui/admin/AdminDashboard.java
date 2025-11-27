@@ -32,16 +32,8 @@ public class AdminDashboard extends JFrame {
         add(bannerPanel, BorderLayout.NORTH);
 
         refreshCallback = () -> SwingUtilities.invokeLater(() -> {
-            // update top maintenance banner
             refreshMaintenanceBanner();
 
-            // if the currently displayed main panel implements Refreshable, call its refresh()
-//            if (mainPanel.getComponentCount() > 0) {
-//                Component c = mainPanel.getComponent(0);
-//                if (c instanceof Refreshable) {
-//                    ((Refreshable) c).refresh();
-//                }
-//            }
         });
 
         JPanel sidebarPanel = new JPanel();

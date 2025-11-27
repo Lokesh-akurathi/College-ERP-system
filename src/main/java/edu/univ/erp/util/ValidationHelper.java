@@ -40,9 +40,7 @@ public class ValidationHelper {
     }
 
     public static String validateSectionData(String dayTime, String room, int capacity) {
-        //if (dayTime == null || dayTime.trim().isEmpty()) {
-            //return "Day/Time is required.";
-        //}
+       
         if (room == null || room.trim().isEmpty()) {
             return "Room is required.";
         }

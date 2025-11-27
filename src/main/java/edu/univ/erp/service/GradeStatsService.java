@@ -10,17 +10,15 @@ import java.util.stream.Collectors;
 
 public class GradeStatsService {
     
-    // This is the instance you should use to get grades
+    
     private final GradeService gradeService = new GradeService();
 
-    /**
-     * Calculates average, median, and grade distribution for a section.
-     */
+    
     public GradeStats calculateStats(int sectionId) {
-        // This line is correct, assuming GradeService now contains the method
+        
         List<Grade> finalGrades = gradeService.getFinalGradesBySection(sectionId); 
         
-        // ... (rest of the calculation logic is correct) ...
+      
         
         List<Double> scores = finalGrades.stream()
              .filter(g -> g.getScore() != null && "FINAL".equals(g.getComponent()))
@@ -31,10 +29,10 @@ public class GradeStatsService {
              return new GradeStats(0.0, 0.0, Collections.emptyMap());
         }
         
-        // 2. Calculate Average
+      
         double average = scores.stream().mapToDouble(d -> d).average().orElse(0.0);
         
-        // 3. Calculate Median
+       
         Collections.sort(scores);
         double median;
         int size = scores.size();
@@ -44,7 +42,7 @@ public class GradeStatsService {
              median = (scores.get(size / 2 - 1) + scores.get(size / 2)) / 2.0;
         }
         
-        // 4. Calculate Grade Counts (Distribution)
+       
         Map<String, Integer> gradeCounts = finalGrades.stream()
              .filter(g -> g.getScore() != null && "FINAL".equals(g.getComponent()))
              .collect(Collectors.groupingBy(

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class InstructorStore {
 
-    // ================= FIND BY ID =================
+
     public Instructor findById(int userId) {
         String sql = "SELECT user_id, salutation, first_name, last_name, department " +
                      "FROM instructors WHERE user_id = ?";
@@ -34,7 +34,7 @@ public class InstructorStore {
         return null;
     }
 
-    // ================= CREATE =================
+   
     public boolean create(Instructor instructor) {
         String sql = "INSERT INTO instructors (user_id, salutation, first_name, last_name, department) " +
                      "VALUES (?, ?, ?, ?, ?)";
@@ -55,7 +55,7 @@ public class InstructorStore {
         }
     }
 
-    // ================= FIND ALL =================
+    
     public List<Instructor> findAll() {
         List<Instructor> instructors = new ArrayList<>();
 

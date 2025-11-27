@@ -4,6 +4,8 @@ import edu.univ.erp.auth.hash.PasswordHasher;
 import edu.univ.erp.auth.session.SessionManager;
 import edu.univ.erp.auth.store.AuthStore;
 import edu.univ.erp.domain.User;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class AuthService {
     private final AuthStore authStore;
@@ -14,25 +16,60 @@ public class AuthService {
         this.sessionManager = SessionManager.getInstance();
     }
 
-    public boolean login(String username, String password) {
+    public LoginStatus login(String username, String password) {
         User user = authStore.findByUsername(username);
         
-        if (user == null || !user.isActive()) {
-            return false;
+        if (user == null) {
+            
+            return LoginStatus.INCORRECT_CREDENTIALS;
+        }
+
+ 
+        if ("LOCKED".equalsIgnoreCase(user.getStatus())) {
+            if (user.getLockoutUntil() != null && LocalDateTime.now().isBefore(user.getLockoutUntil())) {
+               
+                return LoginStatus.ACCOUNT_LOCKED_TIME;
+            } else {
+                
+                authStore.resetLockout(user.getUserId());
+                user.setStatus("ACTIVE");
+                user.setFailedLoginAttempts(0);
+            }
+        }
+        
+        if (!user.isActive()) {
+            return LoginStatus.INCORRECT_CREDENTIALS;
         }
 
         String passwordHash = authStore.getPasswordHash(user.getUserId());
         if (passwordHash == null) {
-            return false;
+            return LoginStatus.INCORRECT_CREDENTIALS;
         }
 
+        
         if (PasswordHasher.verifyPassword(password, passwordHash)) {
+            
+            if (user.getFailedLoginAttempts() > 0) {
+                authStore.resetLoginAttempts(user.getUserId());
+            }
             sessionManager.setCurrentUser(user);
             authStore.updateLastLogin(user.getUserId());
-            return true;
+            return LoginStatus.SUCCESS;
         }
 
-        return false;
+        
+        int newAttempts = user.getFailedLoginAttempts() + 1;
+        
+        if (newAttempts >= 3) {
+            LocalDateTime lockoutTime = LocalDateTime.now().plusMinutes(5);
+            authStore.lockUser(user.getUserId(), lockoutTime);
+           
+            return LoginStatus.INCORRECT_CREDENTIALS; 
+        } else {
+            authStore.incrementLoginAttempts(user.getUserId());
+            
+            return LoginStatus.INCORRECT_CREDENTIALS; 
+        }
     }
 
     public void logout() {
@@ -61,4 +98,20 @@ public class AuthService {
         String newHash = PasswordHasher.hashPassword(newPassword);
         return authStore.changePassword(currentUser.getUserId(), newHash);
     }
+    
+   
+    public Duration getRemainingLockoutDuration(String username) {
+        User user = authStore.findByUsername(username);
+        if (user != null && "LOCKED".equalsIgnoreCase(user.getStatus()) && user.getLockoutUntil() != null) {
+            LocalDateTime now = LocalDateTime.now();
+            if (now.isBefore(user.getLockoutUntil())) {
+                return Duration.between(now, user.getLockoutUntil());
+            }
+        }
+        return Duration.ZERO;
+    }
+    public int getFailedLoginAttempts(String username) {
+    User user = authStore.findByUsername(username);
+    return (user != null) ? user.getFailedLoginAttempts() : 0;
+}
 }

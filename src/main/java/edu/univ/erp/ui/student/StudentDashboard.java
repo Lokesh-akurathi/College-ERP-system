@@ -5,6 +5,7 @@ import edu.univ.erp.auth.AuthService;
 import edu.univ.erp.domain.User;
 import edu.univ.erp.ui.auth.LoginFrame;
 import edu.univ.erp.ui.common.MaintenanceBanner;
+import edu.univ.erp.ui.common.ChangePasswordDialog; 
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,6 +58,15 @@ public class StudentDashboard extends JFrame {
         
         sidebarPanel.add(Box.createVerticalGlue());
         
+       
+        JButton changePasswordButton = new JButton("Change Password");
+        changePasswordButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        changePasswordButton.setMaximumSize(new Dimension(150, 30));
+        changePasswordButton.addActionListener(e -> showChangePasswordDialog());
+        sidebarPanel.add(changePasswordButton);
+        sidebarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+       
+        
         JButton logoutButton = new JButton("Logout");
         logoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         logoutButton.setMaximumSize(new Dimension(150, 30));
@@ -92,37 +102,46 @@ public class StudentDashboard extends JFrame {
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
     }
 
+   
+    private void showChangePasswordDialog() {
+        User currentUser = authService.getCurrentUser();
+        
+        ChangePasswordDialog dialog = new ChangePasswordDialog(this, currentUser.getUserId());
+        dialog.setVisible(true);
+    }
+   
+
     private void showCourseCatalog() {
         mainPanel.removeAll();
-        mainPanel.add(new CourseCatalogPanel(), BorderLayout.CENTER);
+       
         mainPanel.revalidate();
         mainPanel.repaint();
     }
 
     private void showMyRegistrations() {
         mainPanel.removeAll();
-        mainPanel.add(new MyRegistrationsPanel(), BorderLayout.CENTER);
+        
         mainPanel.revalidate();
         mainPanel.repaint();
     }
 
     private void showMyTimetable() {
         mainPanel.removeAll();
-        mainPanel.add(new MyTimetablePanel(), BorderLayout.CENTER);
+       
         mainPanel.revalidate();
         mainPanel.repaint();
     }
 
     private void showMyGrades() {
         mainPanel.removeAll();
-        mainPanel.add(new MyGradesPanel(), BorderLayout.CENTER);
+        
         mainPanel.revalidate();
         mainPanel.repaint();
     }
 
     private void downloadTranscript() {
         mainPanel.removeAll();
-        mainPanel.add(new TranscriptPanel(), BorderLayout.CENTER);
+       
         mainPanel.revalidate();
         mainPanel.repaint();
     }

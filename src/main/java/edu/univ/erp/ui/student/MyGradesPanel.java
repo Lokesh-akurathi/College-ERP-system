@@ -45,7 +45,7 @@ public class MyGradesPanel extends JPanel {
         titleLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
         add(titleLabel, BorderLayout.NORTH);
 
-        // MAIN SCROLLABLE PANEL (vertical)
+        
         JPanel courseListPanel = new JPanel();
         courseListPanel.setLayout(new BoxLayout(courseListPanel, BoxLayout.Y_AXIS));
         courseListPanel.setBorder(new EmptyBorder(10, 20, 10, 20));
@@ -54,9 +54,7 @@ public class MyGradesPanel extends JPanel {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane, BorderLayout.CENTER);
 
-        // -----------------------------
-        // FETCH ENROLLMENTS
-        // -----------------------------
+        
         List<Enrollment> enrollments = enrollmentService.getMyEnrollments();
 
         if (enrollments.isEmpty()) {
@@ -66,14 +64,10 @@ public class MyGradesPanel extends JPanel {
             return;
         }
 
-        // -----------------------------
-        // CREATE ONE CARD PER COURSE
-        // -----------------------------
-//        List<GradingCriteria> findBySectionId(int sectionId)
-//
+
         for (Enrollment enrollment : enrollments) {
 
-            // Card panel for a single course
+         
             JPanel card = new JPanel(new BorderLayout());
             card.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.GRAY),
@@ -81,7 +75,7 @@ public class MyGradesPanel extends JPanel {
             ));
             card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
 
-            // Course Title Label
+          
             JLabel header = new JLabel(
                     enrollment.getCourseCode() + " — " + enrollment.getCourseTitle()
             );
@@ -89,9 +83,7 @@ public class MyGradesPanel extends JPanel {
             header.setBorder(new EmptyBorder(0, 0, 10, 0));
             card.add(header, BorderLayout.NORTH);
 
-            // -----------------------------
-            // LOAD GRADES FOR THIS ENROLLMENT
-            // -----------------------------
+           
             List<Grade> grades = gradeService.getGradesForEnrollment(enrollment.getEnrollmentId());
             Map<String, ScoreWithWeight> componentScores = new LinkedHashMap<>();
             String letterGrade = "-";
@@ -99,7 +91,7 @@ public class MyGradesPanel extends JPanel {
             Integer section_id = enrollment.getSectionId();
             List<GradingCriteria> gradingcriteria = gradingStore.findBySectionId(section_id);
 
-            // Dynamically collect components
+            
             Map<String, Double> weightByComponent = new HashMap<>();
             if (gradingcriteria != null) {
                 for (GradingCriteria gc : gradingcriteria) {
