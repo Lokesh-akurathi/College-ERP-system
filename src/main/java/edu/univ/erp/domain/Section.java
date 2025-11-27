@@ -42,6 +42,12 @@ public class Section {
         this.year = year;
     }
 
+    public Section(int sectionId, int courseId, int capacity){
+        this.sectionId = sectionId;
+        this.courseId = courseId;
+        this.capacity = capacity;
+    }
+
   
 
     public int getSectionId() {

@@ -4,6 +4,7 @@ import edu.univ.erp.auth.AuthService;
 import edu.univ.erp.domain.User;
 import edu.univ.erp.ui.admin.AdminDashboard;
 import edu.univ.erp.ui.common.MessageDialog;
+import edu.univ.erp.ui.common.BackgroundPanel;
 import edu.univ.erp.ui.instructor.InstructorDashboard;
 import edu.univ.erp.ui.student.StudentDashboard;
 
@@ -17,29 +18,39 @@ public class LoginFrame extends JFrame {
 
     public LoginFrame() {
         this.authService = new AuthService();
-        
+
+        // Use classpath resource (place the jpeg under src/main/resources/images/)
+        BackgroundPanel bg = new BackgroundPanel("/images/iiitdrndblock.jpeg");
+        bg.setLayout(new BorderLayout());
+
+        setContentPane(bg);                     // only call once
         setTitle("University ERP - Login");
-        setSize(400, 300);
+        setSize(420, 340);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
 
+        // Header (semi-transparent so background is visible)
         JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(33, 150, 243));
+        headerPanel.setOpaque(true);
+        headerPanel.setBackground(new Color(33, 150, 243, 200)); // alpha < 255 -> semi transparent
         headerPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         JLabel titleLabel = new JLabel("University ERP System");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titleLabel.setForeground(Color.WHITE);
         headerPanel.add(titleLabel);
-        add(headerPanel, BorderLayout.NORTH);
+        bg.add(headerPanel, BorderLayout.NORTH);
 
+        // Form (make non-opaque so background shows through)
         JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setOpaque(false); // <-- important
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
 
         JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setForeground(Color.WHITE);
+        usernameLabel.setFont(new Font("Arial", Font.BOLD, 16));
         gbc.gridx = 0;
         gbc.gridy = 0;
         formPanel.add(usernameLabel, gbc);
@@ -50,6 +61,8 @@ public class LoginFrame extends JFrame {
         formPanel.add(usernameField, gbc);
 
         JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setForeground(Color.WHITE);
+        passwordLabel.setFont(new Font("Arial", Font.BOLD, 16));
         gbc.gridx = 0;
         gbc.gridy = 1;
         formPanel.add(passwordLabel, gbc);
@@ -60,24 +73,26 @@ public class LoginFrame extends JFrame {
         formPanel.add(passwordField, gbc);
 
         JButton loginButton = new JButton("Login");
-        loginButton.setBackground(new Color(76, 175, 80));
-        loginButton.setForeground(Color.BLACK);
+        loginButton.setBackground(new Color(33, 150, 243));
+        loginButton.setForeground(Color.WHITE);
         loginButton.setFocusPainted(false);
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.insets = new Insets(15, 5, 5, 5);
         formPanel.add(loginButton, gbc);
 
-        add(formPanel, BorderLayout.CENTER);
+        bg.add(formPanel, BorderLayout.CENTER);
 
+        // Footer (non-opaque or semi-transparent)
         JPanel footerPanel = new JPanel();
+        footerPanel.setOpaque(false);
         footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         JLabel infoLabel = new JLabel("<html><center>Default Credentials:<br>" +
                 "admin1/admin123, inst1/inst123, stu1/stu123</center></html>");
         infoLabel.setFont(new Font("Arial", Font.PLAIN, 10));
-        infoLabel.setForeground(Color.GRAY);
+        infoLabel.setForeground(Color.WHITE);
         footerPanel.add(infoLabel);
-        add(footerPanel, BorderLayout.SOUTH);
+        bg.add(footerPanel, BorderLayout.SOUTH);
 
         loginButton.addActionListener(e -> performLogin());
         passwordField.addActionListener(e -> performLogin());
@@ -122,3 +137,4 @@ public class LoginFrame extends JFrame {
         });
     }
 }
+
