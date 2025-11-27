@@ -6,6 +6,7 @@ import edu.univ.erp.auth.AuthService;
 import edu.univ.erp.domain.User;
 import edu.univ.erp.ui.auth.LoginFrame;
 import edu.univ.erp.ui.common.MaintenanceBanner;
+import edu.univ.erp.ui.common.ChangePasswordDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -59,6 +60,12 @@ public class InstructorDashboard extends JFrame {
 
         
         sidebarPanel.add(Box.createVerticalGlue());
+        JButton changePasswordButton = new JButton("Change Password");
+        changePasswordButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        changePasswordButton.setMaximumSize(new Dimension(150, 30));
+        changePasswordButton.addActionListener(e -> showChangePasswordDialog());
+        sidebarPanel.add(changePasswordButton);
+        sidebarPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         
         JButton logoutButton = new JButton("Logout");
         logoutButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -119,7 +126,10 @@ public class InstructorDashboard extends JFrame {
         mainPanel.revalidate();
         mainPanel.repaint();
     }
-
+    private void showChangePasswordDialog() {
+        ChangePasswordDialog dialog = new ChangePasswordDialog(this, currentUser.getUserId());
+        dialog.setVisible(true);
+    }
     private void refreshMaintenanceBanner() {
         bannerPanel.removeAll();
         if (AccessControl.isMaintenanceMode()) {

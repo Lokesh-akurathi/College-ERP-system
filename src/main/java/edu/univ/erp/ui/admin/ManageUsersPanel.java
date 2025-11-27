@@ -10,6 +10,9 @@ import java.awt.*;
 public class ManageUsersPanel extends JPanel {
     private final UserService userService;
 
+    
+    private static final String[] USER_ROLES = {"STUDENT", "INSTRUCTOR", "ADMIN"}; 
+
     public ManageUsersPanel() {
         this.userService = new UserService();
         
@@ -21,6 +24,11 @@ public class ManageUsersPanel extends JPanel {
         add(titleLabel, BorderLayout.NORTH);
 
         JTabbedPane tabbedPane = new JTabbedPane();
+
+        tabbedPane.addTab("List Students", new UserListPanel(USER_ROLES[0]));
+        tabbedPane.addTab("List Instructors", new UserListPanel(USER_ROLES[1]));
+        tabbedPane.addTab("List Admins", new UserListPanel(USER_ROLES[2]));
+
         tabbedPane.addTab("Create Student", createStudentPanel());
         tabbedPane.addTab("Create Instructor", createInstructorPanel());
         tabbedPane.addTab("Create Admin", createAdminPanel());
@@ -75,14 +83,15 @@ public class ManageUsersPanel extends JPanel {
 
             if (rollNo.isEmpty() || program.isEmpty()) {
                 MessageDialog.showError((JFrame) SwingUtilities.getWindowAncestor(this), 
-                        "All fields are required.");
+                                "All fields are required.");
                 return;
             }
 
+          
             String error = userService.createStudent(username, password, rollNo, program, year, firstName, lastName);
             if (error == null) {
                 MessageDialog.showSuccess((JFrame) SwingUtilities.getWindowAncestor(this), 
-                        "Student created successfully!");
+                                "Student created successfully!");
                 usernameField.setText("");
                 passwordField.setText("");
                 rollNoField.setText("");
@@ -98,6 +107,7 @@ public class ManageUsersPanel extends JPanel {
         return panel;
     }
 
+    
     private JPanel createInstructorPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -143,14 +153,14 @@ public class ManageUsersPanel extends JPanel {
 
             if (department.isEmpty()) {
                 MessageDialog.showError((JFrame) SwingUtilities.getWindowAncestor(this), 
-                        "Department is required.");
+                                "Department is required.");
                 return;
             }
 
             String error = userService.createInstructor(username, password, department,firstName,lastName,salutation);
             if (error == null) {
                 MessageDialog.showSuccess((JFrame) SwingUtilities.getWindowAncestor(this), 
-                        "Instructor created successfully!");
+                                "Instructor created successfully!");
                 usernameField.setText("");
                 passwordField.setText("");
                 departmentField.setText("");
@@ -164,6 +174,7 @@ public class ManageUsersPanel extends JPanel {
 
         return panel;
     }
+
 
     private JPanel createAdminPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
@@ -195,10 +206,11 @@ public class ManageUsersPanel extends JPanel {
                 return;
             }
 
+           
             String error = userService.createAdmin(username, password);
             if (error == null) {
                 MessageDialog.showSuccess((JFrame) SwingUtilities.getWindowAncestor(this), 
-                        "Admin created successfully!");
+                                "Admin created successfully!");
                 usernameField.setText("");
                 passwordField.setText("");
             } else {
@@ -209,6 +221,7 @@ public class ManageUsersPanel extends JPanel {
         return panel;
     }
 
+    
     private void addFormField(JPanel panel, GridBagConstraints gbc, int row, String labelText, JComponent field) {
         gbc.gridx = 0;
         gbc.gridy = row;

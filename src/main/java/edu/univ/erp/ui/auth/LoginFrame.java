@@ -1,6 +1,7 @@
 package edu.univ.erp.ui.auth;
 
 import edu.univ.erp.auth.AuthService;
+import edu.univ.erp.auth.LoginStatus;
 import edu.univ.erp.domain.User;
 import edu.univ.erp.ui.admin.AdminDashboard;
 import edu.univ.erp.ui.common.MessageDialog;
@@ -9,11 +10,17 @@ import edu.univ.erp.ui.student.StudentDashboard;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.Duration; 
 
 public class LoginFrame extends JFrame {
     private final JTextField usernameField;
     private final JPasswordField passwordField;
     private final AuthService authService;
+    private final JLabel statusLabel;
+    private final JButton loginButton;
+    
+  
+    private String lockedUsername = null; 
 
     public LoginFrame() {
         this.authService = new AuthService();
@@ -38,7 +45,8 @@ public class LoginFrame extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
-
+        
+       
         JLabel usernameLabel = new JLabel("Username:");
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -58,18 +66,30 @@ public class LoginFrame extends JFrame {
         gbc.gridx = 1;
         gbc.gridy = 1;
         formPanel.add(passwordField, gbc);
-
-        JButton loginButton = new JButton("Login");
+        
+       
+        statusLabel = new JLabel("", SwingConstants.CENTER);
+        statusLabel.setForeground(Color.RED);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        formPanel.add(statusLabel, gbc);
+        
+       
+        loginButton = new JButton("Login");
         loginButton.setBackground(new Color(76, 175, 80));
         loginButton.setForeground(Color.BLACK);
         loginButton.setFocusPainted(false);
         gbc.gridx = 1;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
         gbc.insets = new Insets(15, 5, 5, 5);
         formPanel.add(loginButton, gbc);
 
         add(formPanel, BorderLayout.CENTER);
 
+       
         JPanel footerPanel = new JPanel();
         footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         JLabel infoLabel = new JLabel("<html><center>Default Credentials:<br>" +
@@ -82,27 +102,113 @@ public class LoginFrame extends JFrame {
         loginButton.addActionListener(e -> performLogin());
         passwordField.addActionListener(e -> performLogin());
 
+       
+        checkInitialLockout();
+        
         setVisible(true);
     }
+    
+    private void checkInitialLockout() {
+        
+        if (usernameField.getText().trim().isEmpty()) return;
+        
+        String username = usernameField.getText().trim();
+        Duration remaining = authService.getRemainingLockoutDuration(username);
+        
+        
+        if (!remaining.isZero()) {
+             setLockedState(username);
+        }
+    }
+
 
     private void performLogin() {
         String username = usernameField.getText().trim();
         String password = new String(passwordField.getPassword());
 
         if (username.isEmpty() || password.isEmpty()) {
-            MessageDialog.showError(this, "Please enter both username and password.");
+            statusLabel.setText("Please enter both username and password.");
             return;
         }
+        
+      
+        if (username.equals(lockedUsername)) {
+            Duration remaining = authService.getRemainingLockoutDuration(username);
+            
+            if (remaining.isZero()) {
+                
+                clearLockedState();
+            } else {
+               
+                setLockedState(username); 
+                return;
+            }
+        }
+        
+       
+        statusLabel.setText("");
 
-        if (authService.login(username, password)) {
+        LoginStatus status = authService.login(username, password);
+
+        if (status == LoginStatus.SUCCESS) {
+            clearLockedState(); 
+            
             User currentUser = authService.getCurrentUser();
             dispose();
             openDashboard(currentUser.getRole());
-        } else {
-            MessageDialog.showError(this, "Incorrect username or password.");
-            passwordField.setText("");
+            
+        } else if (status == LoginStatus.ACCOUNT_LOCKED_TIME) {
+          
+            setLockedState(username);
+            
+        } else { 
+            
+            int attempts = authService.getFailedLoginAttempts(username);
+            
+            if (attempts >= 3) {
+               
+                setLockedState(username);
+            } else {
+               
+                int attemptsLeft = 3 - attempts;
+                String message = String.format("Incorrect credentials. You have %d attempts remaining.", attemptsLeft);
+                statusLabel.setText(message);
+            }
         }
+        
+       
+        passwordField.setText("");
+        
+        usernameField.requestFocusInWindow();
     }
+
+    
+    private void setLockedState(String username) {
+        lockedUsername = username;
+        
+        
+        
+        loginButton.setText("Login"); 
+        statusLabel.setText("You are blocked for 5 minutes. Try again later.");
+        
+        
+        passwordField.setText("");
+        usernameField.requestFocusInWindow();
+    }
+    
+   
+    private void clearLockedState() {
+        lockedUsername = null;
+        
+       
+        usernameField.setEnabled(true);
+        passwordField.setEnabled(true);
+        loginButton.setEnabled(true);
+        
+        loginButton.setText("Login");
+        statusLabel.setText("");
+    }
+
 
     private void openDashboard(String role) {
         SwingUtilities.invokeLater(() -> {

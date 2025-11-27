@@ -39,7 +39,7 @@ public class AddDropControlPanel extends JPanel {
         contentPanel.add(statusLabel, gbc);
 
         JButton enableButton = new JButton("Enable Add/Drop");
-        enableButton.setBackground(new Color(33, 150, 243)); // blue-ish
+        enableButton.setBackground(new Color(33, 150, 243));
         enableButton.setForeground(Color.WHITE);
         enableButton.setPreferredSize(new Dimension(200, 40));
         enableButton.addActionListener(e -> toggleAddDrop(true));
@@ -49,7 +49,7 @@ public class AddDropControlPanel extends JPanel {
         contentPanel.add(enableButton, gbc);
 
         JButton disableButton = new JButton("Disable Add/Drop");
-        disableButton.setBackground(new Color(244, 67, 54)); // red-ish
+        disableButton.setBackground(new Color(244, 67, 54)); 
         disableButton.setForeground(Color.WHITE);
         disableButton.setPreferredSize(new Dimension(200, 40));
         disableButton.addActionListener(e -> toggleAddDrop(false));

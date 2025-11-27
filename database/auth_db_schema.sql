@@ -10,7 +10,12 @@ CREATE TABLE users_auth (
     password_hash VARCHAR(255) NOT NULL,
     status VARCHAR(20) DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'INACTIVE', 'LOCKED')),
     last_login TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- <<< NEW LOCKOUT COLUMNS >>>
+    failed_login_attempts INT DEFAULT 0,
+    lockout_until TIMESTAMP 
+    -- <<< END NEW COLUMNS >>>
 );
 
 -- Insert default users with hashed passwords
