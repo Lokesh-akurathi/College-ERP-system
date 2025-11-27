@@ -3,8 +3,10 @@ package edu.univ.erp.ui.instructor;
 import edu.univ.erp.domain.Section;
 import edu.univ.erp.domain.GradingCriteria;
 import edu.univ.erp.service.InstructorService;
+import edu.univ.erp.ui.ThemeConstants;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public class ManageGradingPanel extends JPanel {
         this.currentInstructorId = instructorId;
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         
         initializeComponents();
         loadInstructorSections();
@@ -34,7 +37,11 @@ public class ManageGradingPanel extends JPanel {
 
     private void initializeComponents() {
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.add(new JLabel("Select Section:"));
+        topPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
+       JLabel selectSectionLabel = new JLabel("Select Section:"); 
+    selectSectionLabel.setForeground(ThemeConstants.TEXT_DARK);
+    topPanel.add(selectSectionLabel);
+
         sectionComboBox = new JComboBox<>();
         topPanel.add(sectionComboBox);
         this.add(topPanel, BorderLayout.NORTH);
@@ -47,6 +54,53 @@ public class ManageGradingPanel extends JPanel {
             }
         };
         criteriaTable = new JTable(tableModel);
+        criteriaTable.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
+    criteriaTable.setForeground(ThemeConstants.TEXT_DARK);
+    criteriaTable.setGridColor(ThemeConstants.PRIMARY_NAVY);
+    criteriaTable.setSelectionBackground(ThemeConstants.BUTTON_HOVER_ACTIVE);
+    criteriaTable.setSelectionForeground(ThemeConstants.TEXT_LIGHT);
+    criteriaTable.getTableHeader().setBackground(ThemeConstants.PRIMARY_NAVY);
+    criteriaTable.getTableHeader().setForeground(ThemeConstants.TEXT_LIGHT);
+    criteriaTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+   
+DefaultTableCellRenderer customRowStripeRenderer = new DefaultTableCellRenderer() {
+    @Override
+    public Component getTableCellRendererComponent(
+            JTable table, Object value, boolean isSelected,
+            boolean hasFocus, int row, int column) {
+
+        Component c = super.getTableCellRendererComponent(
+                table, value, isSelected, hasFocus, row, column);
+        ((JComponent)c).setOpaque(true);
+
+        
+        if (column == 1) {
+             setHorizontalAlignment(SwingConstants.RIGHT);
+        } else {
+             setHorizontalAlignment(SwingConstants.LEFT);
+        }
+
+        if (isSelected) {
+            c.setBackground(ThemeConstants.BUTTON_HOVER_ACTIVE);
+            c.setForeground(ThemeConstants.TEXT_LIGHT);
+        } else {
+           
+            if (row % 2 == 0) {
+                c.setBackground(new Color(240, 245, 250)); // light bluish
+            } else {
+                c.setBackground(Color.WHITE);
+            }
+            c.setForeground(ThemeConstants.TEXT_DARK);
+        }
+        return c;
+    }
+};
+
+criteriaTable.setDefaultRenderer(Object.class, customRowStripeRenderer);
+
+criteriaTable.setDefaultRenderer(String.class, customRowStripeRenderer);
+
+criteriaTable.setDefaultRenderer(Double.class, customRowStripeRenderer);
 
         JButton addRowButton = new JButton("Add New Component");
         addRowButton.addActionListener(e -> tableModel.addRow(new Object[]{"New Component", 0.0}));
@@ -55,7 +109,9 @@ public class ManageGradingPanel extends JPanel {
         deleteRowButton.addActionListener(e -> deleteSelectedRow());
 
         JPanel editorPanel = new JPanel(new BorderLayout());
+        editorPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        actionPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         actionPanel.add(addRowButton);
         actionPanel.add(deleteRowButton);
 
@@ -64,11 +120,15 @@ public class ManageGradingPanel extends JPanel {
         this.add(editorPanel, BorderLayout.CENTER);
 
         JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         totalWeightLabel = new JLabel("Total Weight: 0.0%");
         totalWeightLabel.setFont(totalWeightLabel.getFont().deriveFont(Font.BOLD));
         saveButton = new JButton("Save Grading Criteria");
+        saveButton.setBackground(new Color(76, 175, 80));
+        saveButton.setForeground(ThemeConstants.TEXT_LIGHT);
 
         JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        statusPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         statusPanel.add(totalWeightLabel);
         bottomPanel.add(statusPanel, BorderLayout.WEST);
         bottomPanel.add(saveButton, BorderLayout.EAST);

@@ -8,7 +8,6 @@ import edu.univ.erp.ui.common.MessageDialog;
 import edu.univ.erp.ui.common.BackgroundPanel;
 import edu.univ.erp.ui.instructor.InstructorDashboard;
 import edu.univ.erp.ui.student.StudentDashboard;
-
 import javax.swing.*;
 import java.awt.*;
 import java.time.Duration;
@@ -26,11 +25,11 @@ public class LoginFrame extends JFrame {
     public LoginFrame() {
         this.authService = new AuthService();
 
-        // Use classpath resource (place the jpeg under src/main/resources/images/)
+        
         BackgroundPanel bg = new BackgroundPanel("/images/iiitdrndblock.jpeg");
         bg.setLayout(new BorderLayout());
 
-        setContentPane(bg);                     // only call once
+        setContentPane(bg);                    
         setTitle("University ERP - Login");
         setSize(420, 340);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,7 +38,7 @@ public class LoginFrame extends JFrame {
 
         JPanel headerPanel = new JPanel();
         headerPanel.setOpaque(true);
-        headerPanel.setBackground(new Color(33, 150, 243, 200)); // alpha < 255 -> semi transparent
+        headerPanel.setBackground(new Color(33, 150, 243, 200)); 
         headerPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         JLabel titleLabel = new JLabel("University ERP System");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
@@ -48,7 +47,7 @@ public class LoginFrame extends JFrame {
         bg.add(headerPanel, BorderLayout.NORTH);
 
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setOpaque(false); // <-- important
+        formPanel.setOpaque(false);
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -92,10 +91,7 @@ public class LoginFrame extends JFrame {
         formPanel.add(statusLabel, gbc);
 
 
-//        loginButton = new JButton("Login");
-//        loginButton.setBackground(new Color(76, 175, 80));
-//        loginButton.setForeground(Color.BLACK);
-//        loginButton.setFocusPainted(false);
+
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.gridwidth = 1;

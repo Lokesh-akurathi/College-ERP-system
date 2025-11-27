@@ -3,6 +3,7 @@ package edu.univ.erp.ui.student;
 import edu.univ.erp.domain.Enrollment;
 import edu.univ.erp.service.EnrollmentService;
 import edu.univ.erp.ui.common.MessageDialog;
+import edu.univ.erp.ui.ThemeConstants;
 
 import edu.univ.erp.util.PDFExporter; 
 
@@ -23,13 +24,16 @@ public class TranscriptPanel extends JPanel {
         this.pdfExporter = new PDFExporter(); 
         
         setLayout(new BorderLayout());
+        setBackground(ThemeConstants.SECONDARY_BACKGROUND);
 
         JLabel titleLabel = new JLabel("Download Academic Transcript");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setForeground(ThemeConstants.TEXT_DARK);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         add(titleLabel, BorderLayout.NORTH);
 
         JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
 
@@ -37,14 +41,15 @@ public class TranscriptPanel extends JPanel {
         JLabel infoLabel = new JLabel("<html><p>Click the button below to download your official academic transcript.</p>" +
                 "<p>The transcript will be saved as a **PDF file** containing your final course grades and CGPA.</p></html>"); 
         gbc.gridx = 0;
+        infoLabel.setForeground(ThemeConstants.TEXT_DARK);
         gbc.gridy = 0;
         contentPanel.add(infoLabel, gbc);
 
     
         JButton downloadButton = new JButton("Download Transcript (PDF)"); 
-        downloadButton.setBackground(new Color(33, 150, 243));
-        downloadButton.setForeground(Color.WHITE);
-        downloadButton.setPreferredSize(new Dimension(220, 40));
+        downloadButton.setBackground(ThemeConstants.ACTION_BUTTON_VIBRANT);
+        downloadButton.setForeground(ThemeConstants.TEXT_LIGHT);
+        downloadButton.setPreferredSize(new Dimension(240, 45));
         downloadButton.addActionListener(e -> downloadTranscript());
         gbc.gridy = 1;
         contentPanel.add(downloadButton, gbc);

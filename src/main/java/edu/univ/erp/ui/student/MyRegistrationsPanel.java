@@ -4,8 +4,10 @@ package edu.univ.erp.ui.student;
 import edu.univ.erp.domain.Enrollment;
 import edu.univ.erp.service.EnrollmentService;
 import edu.univ.erp.ui.common.MessageDialog;
+import edu.univ.erp.ui.ThemeConstants;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
@@ -19,9 +21,11 @@ public class MyRegistrationsPanel extends JPanel {
     public MyRegistrationsPanel() {
         this.enrollmentService = new EnrollmentService();
         setLayout(new BorderLayout());
+        setBackground(ThemeConstants.SECONDARY_BACKGROUND);
 
         JLabel titleLabel = new JLabel("My Registrations");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setForeground(ThemeConstants.TEXT_DARK);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         add(titleLabel, BorderLayout.NORTH);
 
@@ -46,19 +50,62 @@ public class MyRegistrationsPanel extends JPanel {
         table = new JTable(tableModel);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setRowHeight(25);
+        table.setGridColor(ThemeConstants.PRIMARY_NAVY);
+        table.setForeground(ThemeConstants.TEXT_DARK);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        table.getTableHeader().setBackground(ThemeConstants.PRIMARY_NAVY);
+        table.getTableHeader().setForeground(ThemeConstants.TEXT_LIGHT);
+        DefaultTableCellRenderer rowStripeRenderer = new DefaultTableCellRenderer() {
+    private static final long serialVersionUID = 1L;
+    @Override
+    public Component getTableCellRendererComponent(
+            JTable table, Object value, boolean isSelected,
+            boolean hasFocus, int row, int column) {
+
+        Component c = super.getTableCellRendererComponent(
+                table, value, isSelected, hasFocus, row, column);
+        ((JComponent)c).setOpaque(true); 
+
+       
+        if (column == 3) { 
+            setHorizontalAlignment(SwingConstants.CENTER);
+        } else {
+            setHorizontalAlignment(SwingConstants.LEFT);
+        }
+
+        if (isSelected) {
+            c.setBackground(ThemeConstants.BUTTON_HOVER_ACTIVE);
+            c.setForeground(ThemeConstants.TEXT_LIGHT);
+        } else {
+            // Zebra Striping Logic
+            if (row % 2 == 0) {
+                c.setBackground(new Color(240, 245, 250)); // Light stripe
+            } else {
+                c.setBackground(Color.WHITE); // White stripe
+            }
+            c.setForeground(ThemeConstants.TEXT_DARK);
+        }
+        return c;
+    }
+};table.setDefaultRenderer(Object.class, rowStripeRenderer);
+table.setDefaultRenderer(String.class, rowStripeRenderer);
+table.setDefaultRenderer(Integer.class, rowStripeRenderer);
 
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
 
         JButton dropButton = new JButton("Drop Selected Section");
         dropButton.setBackground(new Color(244, 67, 54));
-        dropButton.setForeground(Color.WHITE);
+        dropButton.setForeground(ThemeConstants.TEXT_LIGHT);
         dropButton.addActionListener(e -> dropSection());
         buttonPanel.add(dropButton);
 
         JButton refreshButton = new JButton("Refresh");
+        refreshButton.setBackground(ThemeConstants.BUTTON_HOVER_ACTIVE);
+        refreshButton.setForeground(ThemeConstants.TEXT_LIGHT);
         refreshButton.addActionListener(e -> loadEnrollments());
         buttonPanel.add(refreshButton);
 

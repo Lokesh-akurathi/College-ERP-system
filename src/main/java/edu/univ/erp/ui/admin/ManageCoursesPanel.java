@@ -6,12 +6,11 @@ import edu.univ.erp.service.AdminService;
 import edu.univ.erp.service.CourseService;
 import edu.univ.erp.ui.common.MessageDialog;
 import edu.univ.erp.util.ValidationHelper;
+import edu.univ.erp.ui.ThemeConstants;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.List;
-
 public class ManageCoursesPanel extends JPanel {
 
     private final CourseService courseService = new CourseService();
@@ -30,9 +29,11 @@ public class ManageCoursesPanel extends JPanel {
 
     public ManageCoursesPanel() {
         setLayout(new BorderLayout());
+        setBackground(ThemeConstants.SECONDARY_BACKGROUND);
 
         JLabel titleLabel = new JLabel("Manage Courses");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setForeground(ThemeConstants.TEXT_DARK);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         add(titleLabel, BorderLayout.NORTH);
 
@@ -44,12 +45,42 @@ public class ManageCoursesPanel extends JPanel {
 
         table = new JTable(tableModel);
         table.setRowHeight(25);
+        table.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value,
+            boolean isSelected, boolean hasFocus, int row, int column) {
+
+        Component c = super.getTableCellRendererComponent(
+                table, value, isSelected, hasFocus, row, column);
+
+        if (isSelected) {
+            c.setBackground(ThemeConstants.BUTTON_HOVER_ACTIVE);
+            c.setForeground(ThemeConstants.TEXT_LIGHT);
+        } else {
+            if (row % 2 == 0) {
+                c.setBackground(new Color(240, 245, 250)); // light bluish
+            } else {
+                c.setBackground(Color.WHITE);
+            }
+            c.setForeground(ThemeConstants.TEXT_DARK);
+        }
+        return c;
+    }
+});
+
+        table.getTableHeader().setBackground(ThemeConstants.PRIMARY_NAVY);
+        table.getTableHeader().setForeground(ThemeConstants.TEXT_LIGHT);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        table.setSelectionBackground(ThemeConstants.BUTTON_HOVER_ACTIVE);
+        table.setSelectionForeground(ThemeConstants.TEXT_LIGHT);
+
         table.getSelectionModel().addListSelectionListener(e -> loadSelectedCourseIntoForm());
         add(new JScrollPane(table), BorderLayout.CENTER);
 
         
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createTitledBorder("Add / Edit Course"));
+        formPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;

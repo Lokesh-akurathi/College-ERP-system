@@ -2,11 +2,13 @@ package edu.univ.erp.ui.admin;
 
 import edu.univ.erp.domain.User;
 import edu.univ.erp.service.UserService;
+import edu.univ.erp.ui.ThemeConstants;
 import edu.univ.erp.ui.common.MessageDialog;
 import edu.univ.erp.util.ValidationHelper;
 
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -28,6 +30,37 @@ public class UserListPanel extends JPanel {
         
         setupTableModel();
         userTable = new JTable(tableModel);
+        userTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+    @Override
+    public Component getTableCellRendererComponent(
+            JTable table, Object value, boolean isSelected,
+            boolean hasFocus, int row, int column) {
+
+        Component c = super.getTableCellRendererComponent(
+                table, value, isSelected, hasFocus, row, column);
+         if (isSelected) {
+        c.setForeground(ThemeConstants.TEXT_LIGHT);}
+
+        else if (column == 5) {
+            c.setForeground(new Color(33, 150, 243));
+            c.setFont(c.getFont().deriveFont(Font.BOLD));
+        } else {
+            c.setForeground(ThemeConstants.TEXT_DARK);
+        }
+        return c;
+    }
+});
+
+        userTable.setRowHeight(28);
+        userTable.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
+        userTable.setForeground(ThemeConstants.TEXT_DARK);
+        userTable.setGridColor(ThemeConstants.PRIMARY_NAVY);
+        userTable.setSelectionBackground(ThemeConstants.BUTTON_HOVER_ACTIVE);
+        userTable.setSelectionForeground(ThemeConstants.TEXT_LIGHT);
+        userTable.getTableHeader().setBackground(ThemeConstants.PRIMARY_NAVY);
+        userTable.getTableHeader().setForeground(ThemeConstants.TEXT_LIGHT);
+        userTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
+
     
         loadUserData();
         
@@ -37,8 +70,12 @@ public class UserListPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
         
         JButton refreshButton = new JButton("Refresh List");
+        refreshButton.setBackground(ThemeConstants.BUTTON_HOVER_ACTIVE);
+        refreshButton.setForeground(ThemeConstants.TEXT_LIGHT);
+        refreshButton.setFocusPainted(false);
         refreshButton.addActionListener(e -> loadUserData());
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        controlPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         controlPanel.add(refreshButton);
         add(controlPanel, BorderLayout.NORTH);
     }
@@ -75,6 +112,7 @@ public class UserListPanel extends JPanel {
                 user.getStatus(),
                 actionLabel 
             }); 
+
         }
     }
     

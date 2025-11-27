@@ -3,6 +3,7 @@ package edu.univ.erp.ui.admin;
 import edu.univ.erp.service.UserService;
 import edu.univ.erp.ui.common.MessageDialog;
 import edu.univ.erp.util.ValidationHelper;
+import edu.univ.erp.ui.ThemeConstants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,11 +20,15 @@ public class ManageUsersPanel extends JPanel {
         setLayout(new BorderLayout());
 
         JLabel titleLabel = new JLabel("Manage Users");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setForeground(ThemeConstants.TEXT_DARK);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         add(titleLabel, BorderLayout.NORTH);
 
         JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
+        tabbedPane.setForeground(ThemeConstants.TEXT_DARK);
+        tabbedPane.setFont(new Font("Arial", Font.BOLD, 13));
 
         tabbedPane.addTab("List Students", new UserListPanel(USER_ROLES[0]));
         tabbedPane.addTab("List Instructors", new UserListPanel(USER_ROLES[1]));
@@ -38,6 +43,7 @@ public class ManageUsersPanel extends JPanel {
 
     private JPanel createStudentPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -57,6 +63,7 @@ public class ManageUsersPanel extends JPanel {
         addFormField(panel, gbc, 4, "Last Name:", lastNameField);
         addFormField(panel, gbc, 5, "Program:", programField);
         addFormField(panel, gbc, 6, "Year:", yearSpinner);
+        
 
         JButton createButton = new JButton("Create Student");
         createButton.setBackground(new Color(76, 175, 80));
@@ -74,6 +81,7 @@ public class ManageUsersPanel extends JPanel {
             String firstName = firstNameField.getText().trim();
             String lastName = lastNameField.getText().trim();
             int year = (int) yearSpinner.getValue();
+           
 
             String validationError = ValidationHelper.validateUserData(username, password);
             if (validationError != null) {
@@ -110,6 +118,7 @@ public class ManageUsersPanel extends JPanel {
     
     private JPanel createInstructorPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -178,6 +187,7 @@ public class ManageUsersPanel extends JPanel {
 
     private JPanel createAdminPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 10, 10, 10);

@@ -10,8 +10,9 @@ import edu.univ.erp.service.EnrollmentService;
 import edu.univ.erp.service.GradeService;
 import edu.univ.erp.service.InstructorService;
 import edu.univ.erp.ui.common.MessageDialog;
-
+import edu.univ.erp.ui.ThemeConstants;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.io.BufferedReader; 
@@ -47,14 +48,19 @@ public class GradeEntryPanel extends JPanel {
         this.instructorService = new InstructorService(); 
         
         setLayout(new BorderLayout());
+        setBackground(ThemeConstants.SECONDARY_BACKGROUND);
 
         JLabel titleLabel = new JLabel("Grade Entry");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setForeground(ThemeConstants.TEXT_DARK);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         
         
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.add(new JLabel("Select Section:"));
+        topPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
+       JLabel selectLabel = new JLabel("Select Section:");
+        selectLabel.setForeground(ThemeConstants.TEXT_DARK);
+        topPanel.add(selectLabel);
         
         sectionCombo = new JComboBox<>();
         int instructorId = SessionManager.getInstance().getCurrentUserId();
@@ -73,12 +79,23 @@ public class GradeEntryPanel extends JPanel {
         tableModel = new DefaultTableModel(tempColumns, 0);
         table = new JTable(tableModel);
         table.setRowHeight(25);
+        table.getTableHeader().setBackground(ThemeConstants.PRIMARY_NAVY);
+        table.getTableHeader().setForeground(ThemeConstants.TEXT_LIGHT);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        table.setSelectionBackground(ThemeConstants.BUTTON_HOVER_ACTIVE);
+        table.setSelectionForeground(ThemeConstants.TEXT_LIGHT);
+        GradeCellRenderer renderer = new GradeCellRenderer();
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(renderer);
+        }
         
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         add(scrollPane, BorderLayout.CENTER);
 
      
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         
         JButton saveButton = new JButton("Save Scores");
         saveButton.setBackground(new Color(76, 175, 80));
@@ -180,7 +197,72 @@ public class GradeEntryPanel extends JPanel {
             tableModel.addRow(rowData.toArray());
         }
     }
-    
+   
+private class GradeCellRenderer extends DefaultTableCellRenderer {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, 
+                                                   boolean isSelected, boolean hasFocus, 
+                                                   int row, int column) {
+        
+        
+        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+        
+       
+        int criteriaCount = currentCriteria.size();
+        int firstScoreColumn = 2; 
+        int finalScoreColumn = firstScoreColumn + criteriaCount;
+        int finalGradeColumn = finalScoreColumn + 1; 
+
+     
+        if (column >= firstScoreColumn && column <= finalScoreColumn) {
+            setHorizontalAlignment(SwingConstants.RIGHT);
+        } else {
+            setHorizontalAlignment(SwingConstants.LEFT);
+        }
+
+        
+        if (isSelected) {
+            
+            c.setForeground(Color.WHITE); 
+            
+            return c; 
+        }
+
+      
+        c.setForeground(ThemeConstants.TEXT_DARK);
+        
+        
+        if (column >= firstScoreColumn && column < finalScoreColumn) {
+            c.setBackground(Color.WHITE);
+        } 
+        
+       
+        else if (column == finalGradeColumn) {
+            if (value != null) {
+                String grade = value.toString();
+                if (grade.startsWith("A")) {
+                    c.setBackground(new Color(200, 255, 200)); // Light Green (Success)
+                } else if (grade.startsWith("F")) {
+                    c.setBackground(new Color(255, 200, 200)); // Light Red (Failure)
+                } else {
+                    c.setBackground(new Color(230, 240, 245)); // Light Blue/Gray (Default Pass)
+                }
+            } else {
+                 c.setBackground(ThemeConstants.SECONDARY_BACKGROUND); 
+            }
+        }
+        
+        
+        else { 
+           
+            c.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
+        }
+        ((JComponent)c).setOpaque(true);
+        return c;
+    }
+}
    
     private void updateTableColumns() {
     

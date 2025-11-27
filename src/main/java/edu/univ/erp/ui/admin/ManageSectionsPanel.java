@@ -11,6 +11,8 @@ import edu.univ.erp.service.AdminService;
 import edu.univ.erp.service.CourseService;
 import edu.univ.erp.ui.common.MessageDialog;
 import edu.univ.erp.util.ValidationHelper;
+import edu.univ.erp.ui.ThemeConstants;
+
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -58,9 +60,12 @@ public class ManageSectionsPanel extends JPanel {
         this.adminService = new AdminService();
 
         setLayout(new BorderLayout(8, 8));
+        setBackground(ThemeConstants.SECONDARY_BACKGROUND);
 
         JLabel titleLabel = new JLabel("Manage Sections");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+       titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+       titleLabel.setForeground(ThemeConstants.TEXT_DARK);
+
         titleLabel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         add(titleLabel, BorderLayout.NORTH);
 
@@ -72,12 +77,42 @@ public class ManageSectionsPanel extends JPanel {
         };
         table = new JTable(tableModel);
         table.setRowHeight(24);
+        table.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value,
+            boolean isSelected, boolean hasFocus, int row, int column) {
+
+        Component c = super.getTableCellRendererComponent(
+                table, value, isSelected, hasFocus, row, column);
+
+        if (isSelected) {
+            c.setBackground(ThemeConstants.BUTTON_HOVER_ACTIVE);
+            c.setForeground(ThemeConstants.TEXT_LIGHT);
+        } else {
+            if (row % 2 == 0) {
+                c.setBackground(new Color(240, 245, 250)); // light bluish
+            } else {
+                c.setBackground(Color.WHITE);
+            }
+            c.setForeground(ThemeConstants.TEXT_DARK);
+        }
+        return c;
+    }
+});
+
+        table.getTableHeader().setBackground(ThemeConstants.PRIMARY_NAVY);
+        table.getTableHeader().setForeground(ThemeConstants.TEXT_LIGHT);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        table.setSelectionBackground(ThemeConstants.BUTTON_HOVER_ACTIVE);
+        table.setSelectionForeground(ThemeConstants.TEXT_LIGHT);
+
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
    
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createTitledBorder("Add / Edit Section"));
+        formPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(6, 8, 6, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -150,6 +185,7 @@ public class ManageSectionsPanel extends JPanel {
         add(formPanel, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        buttonPanel.setBackground(ThemeConstants.SECONDARY_BACKGROUND);
 
         addButton = new JButton("Add Section");
         setButtonStyles(addButton, new Color(76, 175, 80));
