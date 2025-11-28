@@ -5,11 +5,13 @@ import java.awt.*;
 
 public class AdminSettingsPanel extends JPanel {
     public AdminSettingsPanel(Runnable refreshCallback) {
-        setLayout(new BorderLayout());
+
+        setLayout(new FlowLayout(FlowLayout.CENTER, 50, 50));
         MaintenanceModePanel maintenancePanel = new MaintenanceModePanel(refreshCallback);
         AddDropControlPanel addDropPanel = new AddDropControlPanel(refreshCallback);
-        add(maintenancePanel,BorderLayout.WEST);
-        add(addDropPanel,BorderLayout.EAST);
 
+        add(maintenancePanel);
+        add(addDropPanel);
     }
 }
+
