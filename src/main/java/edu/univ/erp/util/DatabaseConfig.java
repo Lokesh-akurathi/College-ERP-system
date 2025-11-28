@@ -14,14 +14,14 @@ public class DatabaseConfig {
     public static Connection getAuthConnection() throws SQLException {
         String url = getEnvOrDefault("AUTH_DATABASE_URL", "jdbc:postgresql://localhost:5432/auth_db");
         String username = getEnvOrDefault("PGUSER", "postgres");
-        String password = getEnvOrDefault("PGPASSWORD", "Akul@789");
+        String password = getEnvOrDefault("PGPASSWORD", "postgres");
         return DriverManager.getConnection(url, username, password);
     }
 
     public static Connection getErpConnection() throws SQLException {
         String url = getEnvOrDefault("DATABASE_URL", "jdbc:postgresql://localhost:5432/erp_db");
         String username = getEnvOrDefault("PGUSER", "postgres");
-        String password = getEnvOrDefault("PGPASSWORD", "Akul@789");
+        String password = getEnvOrDefault("PGPASSWORD", "postgres");
         return DriverManager.getConnection(url, username, password);
     }
 }
