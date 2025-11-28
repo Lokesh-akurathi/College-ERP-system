@@ -137,3 +137,6 @@ src/main/java/edu/univ/erp/
 6. Run JAR file
 
 ### You can check detailed architecture of this Project in docs folder `/docs/ARCHITECTURE.md` of this project.
+
+## Project Demo
+- You can view project demo video here: https://drive.google.com/file/d/18zOY2DqNxmqsN1Q9Cm2uUH_3m936_UQi/view?usp=drive_link
