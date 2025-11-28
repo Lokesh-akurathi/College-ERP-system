@@ -243,11 +243,11 @@ private class GradeCellRenderer extends DefaultTableCellRenderer {
             if (value != null) {
                 String grade = value.toString();
                 if (grade.startsWith("A")) {
-                    c.setBackground(new Color(200, 255, 200)); // Light Green (Success)
+                    c.setBackground(new Color(200, 255, 200));
                 } else if (grade.startsWith("F")) {
-                    c.setBackground(new Color(255, 200, 200)); // Light Red (Failure)
+                    c.setBackground(new Color(255, 200, 200));
                 } else {
-                    c.setBackground(new Color(230, 240, 245)); // Light Blue/Gray (Default Pass)
+                    c.setBackground(new Color(230, 240, 245)); 
                 }
             } else {
                  c.setBackground(ThemeConstants.SECONDARY_BACKGROUND); 

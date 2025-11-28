@@ -8,26 +8,22 @@ DROP TABLE IF EXISTS instructors CASCADE;
 DROP TABLE IF EXISTS students CASCADE;
 DROP TABLE IF EXISTS settings CASCADE;
 
--- 1. MODIFIED STUDENTS TABLE (ADDED NAME COLUMNS)
 CREATE TABLE students (
     user_id INTEGER PRIMARY KEY,
     roll_no VARCHAR(20) UNIQUE NOT NULL,
-    first_name VARCHAR(100) NOT NULL,    -- NEW
-    last_name VARCHAR(100) NOT NULL,     -- NEW
+    first_name VARCHAR(100) NOT NULL,    
+    last_name VARCHAR(100) NOT NULL,     
     program VARCHAR(100) NOT NULL,
     year INTEGER NOT NULL CHECK (year >= 1 AND year <= 5)
 );
-
--- 2. MODIFIED INSTRUCTORS TABLE (ADDED NAME AND SALUTATION COLUMNS)
 CREATE TABLE instructors (
     user_id INTEGER PRIMARY KEY,
-    salutation VARCHAR(10),              -- NEW: Optional Salutation (e.g., 'Prof.', 'Dr.')
-    first_name VARCHAR(100) NOT NULL,    -- NEW
-    last_name VARCHAR(100) NOT NULL,     -- NEW
+    salutation VARCHAR(10),              
+    first_name VARCHAR(100) NOT NULL,    
+    last_name VARCHAR(100) NOT NULL,     
     department VARCHAR(100) NOT NULL
 );
 
--- STANDARD TABLES (NO CHANGES)
 CREATE TABLE courses (
     course_id SERIAL PRIMARY KEY,
     code VARCHAR(20) UNIQUE NOT NULL,
@@ -58,7 +54,7 @@ CREATE TABLE section_times (
 
 CREATE TABLE enrollments (
     enrollment_id SERIAL PRIMARY KEY,
-    student_id INTEGER NOT NULL REFERENCES students(user_id), -- Added explicit foreign key constraint
+    student_id INTEGER NOT NULL REFERENCES students(user_id), 
     section_id INTEGER NOT NULL REFERENCES sections(section_id),
     status VARCHAR(20) DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'DROPPED')),
     enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -90,17 +86,14 @@ CREATE TABLE settings (
 
 -- SAMPLE DATA UPDATES
 
--- 1. UPDATED STUDENTS INSERTIONS (ID 3 & 4 with names)
 INSERT INTO students (user_id, roll_no, first_name, last_name, program, year) VALUES
 (3, 'STU2025001', 'Abhinav', 'Arya', 'Computer Science', 2),
 (4, 'STU2025002', 'Mohit', 'Sharma', 'Electrical Engineering', 1);
 
--- 2. UPDATED INSTRUCTORS INSERTIONS (ID 2 with salutation and name)
 INSERT INTO instructors (user_id, salutation, first_name, last_name, department) VALUES
-(2, 'Prof.', 'Ashok', 'Mittal', 'Computer Science');
+(2, 'Prof.', 'Ashok', 'Mittal', 'Computer Science'),
+(3, 'Dr.', 'Neha', 'Gupta', 'Mathematics');
 
-
--- EXISTING DATA INSERTS
 INSERT INTO courses (code, title, credits) VALUES
 ('CSE101', 'Introduction to Programming', 4),
 ('CSE201', 'Data Structures', 4),

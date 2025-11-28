@@ -86,7 +86,7 @@ DefaultTableCellRenderer customRowStripeRenderer = new DefaultTableCellRenderer(
         } else {
            
             if (row % 2 == 0) {
-                c.setBackground(new Color(240, 245, 250)); // light bluish
+                c.setBackground(new Color(240, 245, 250));
             } else {
                 c.setBackground(Color.WHITE);
             }

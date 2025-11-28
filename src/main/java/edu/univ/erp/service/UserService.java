@@ -36,7 +36,7 @@ public class UserService {
 
         String passwordHash = PasswordHasher.hashPassword(password);
         if (!authStore.createUser(username, "STUDENT", passwordHash)) {
-            return "Failed to create user account.";
+            return "Failed to create user account. User Name already exists.";
         }
 
         int userId = authStore.getUserIdByUsername(username);
@@ -50,7 +50,7 @@ public class UserService {
         if (studentStore.create(student)) {
             return null;
         } else {
-            return "Failed to create student profile.";
+            return "Failed to create student profile. Roll number already exists.";
         }
     }
 

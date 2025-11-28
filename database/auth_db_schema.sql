@@ -12,16 +12,15 @@ CREATE TABLE users_auth (
     last_login TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
-    -- <<< NEW LOCKOUT COLUMNS >>>
+
     failed_login_attempts INT DEFAULT 0,
     lockout_until TIMESTAMP 
-    -- <<< END NEW COLUMNS >>>
+  
 );
 
--- Insert default users with hashed passwords
--- Password for all users: admin123, inst123, stu123 respectively
 INSERT INTO users_auth (username, role, password_hash, status) VALUES
 ('admin1', 'ADMIN', '$2a$12$v03/8A0lewTceJbV3ow7cOsygxujKapftME70yyjnMt7/AftV.OJW', 'ACTIVE'),
 ('inst1', 'INSTRUCTOR', '$2a$12$zY3ROl2rYOCpeM7m/Uxd..bh3nVJ2I18LPWe7gkoHGI9mcNvNmw/S', 'ACTIVE'),
 ('stu1', 'STUDENT', '$2a$12$Htx.KfNJG4WYZzarhw0dX.yWciZwByBsBDuyuW4y3tSdTqrp.Kjmm', 'ACTIVE'),
-('stu2', 'STUDENT', '$2a$12$Htx.KfNJG4WYZzarhw0dX.yWciZwByBsBDuyuW4y3tSdTqrp.Kjmm', 'ACTIVE');
+('stu2', 'STUDENT', '$2a$12$Htx.KfNJG4WYZzarhw0dX.yWciZwByBsBDuyuW4y3tSdTqrp.Kjmm', 'ACTIVE'),
+('inst2', 'INSTRUCTOR', '$2a$12$zY3ROl2rYOCpeM7m/Uxd..bh3nVJ2I18LPWe7gkoHGI9mcNvNmw/S', 'ACTIVE');
