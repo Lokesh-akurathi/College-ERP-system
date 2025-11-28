@@ -125,6 +125,7 @@ src/main/java/edu/univ/erp/
 │   └── session/                 # Session management
 ├── access/                      # Access control
 └── util/                        # Utilities (CSV, PDF, validation)
+└── test/                        # Key functionalities tested 
 ```
 
 ### Local Deployment

@@ -26,6 +26,7 @@ edu.univ.erp/
 │   ├── instructor/             # Instructor panels
 │   ├── admin/                  # Admin panels
 │   └── common/                 # Shared UI components
+│   └── ThemeConstants/         # Fixing the Colour Scheme for UI
 ├── service/                    # Business Logic Layer
 │   ├── UserService             # User management logic
 │   ├── EnrollmentService       # Registration/drop logic
@@ -49,6 +50,7 @@ edu.univ.erp/
 │   ├── hash/PasswordHasher     # BCrypt hashing
 │   ├── store/AuthStore         # Auth DB access
 │   └── session/SessionManager  # Session state
+│   └── LoginStatus             # Enums for login state
 ├── access/                     # Authorization Layer
 │   └── AccessControl           # Permission checks
 ├── domain/                     # Contain data classes(cource,enrollment grade,etc..) 
