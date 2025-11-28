@@ -92,12 +92,12 @@ CREATE TABLE settings (
 
 -- 1. UPDATED STUDENTS INSERTIONS (ID 3 & 4 with names)
 INSERT INTO students (user_id, roll_no, first_name, last_name, program, year) VALUES
-(3, 'STU2025001', 'Alex', 'Johnson', 'Computer Science', 2),
-(4, 'STU2025002', 'Maria', 'Garcia', 'Electrical Engineering', 1);
+(3, 'STU2025001', 'Abhinav', 'Arya', 'Computer Science', 2),
+(4, 'STU2025002', 'Mohit', 'Sharma', 'Electrical Engineering', 1);
 
 -- 2. UPDATED INSTRUCTORS INSERTIONS (ID 2 with salutation and name)
 INSERT INTO instructors (user_id, salutation, first_name, last_name, department) VALUES
-(2, 'Prof.', 'Jane', 'Smith', 'Computer Science');
+(2, 'Prof.', 'Ashok', 'Mittal', 'Computer Science');
 
 
 -- EXISTING DATA INSERTS

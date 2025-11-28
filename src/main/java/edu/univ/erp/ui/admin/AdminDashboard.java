@@ -97,7 +97,7 @@ private void addMenuButton(JPanel panel, String text, Runnable action) {
     button.setBackground(ThemeConstants.PRIMARY_NAVY);
     button.setForeground(ThemeConstants.TEXT_LIGHT);
     button.setFocusPainted(false);
-    button.setBorderPainted(false);
+    button.setBorderPainted(true);
 
     button.addMouseListener(new java.awt.event.MouseAdapter() {
         @Override
