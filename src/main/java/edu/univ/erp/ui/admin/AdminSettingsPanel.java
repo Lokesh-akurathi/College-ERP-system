@@ -8,12 +8,8 @@ public class AdminSettingsPanel extends JPanel {
         setLayout(new BorderLayout());
         MaintenanceModePanel maintenancePanel = new MaintenanceModePanel(refreshCallback);
         AddDropControlPanel addDropPanel = new AddDropControlPanel(refreshCallback);
+        add(maintenancePanel,BorderLayout.WEST);
+        add(addDropPanel,BorderLayout.EAST);
 
-        JPanel splitPanel = new JPanel(new GridLayout(1, 2, 10, 0));
-        splitPanel.add(maintenancePanel);
-        splitPanel.add(addDropPanel);
-
-        add(splitPanel, BorderLayout.CENTER);
-        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
 }
