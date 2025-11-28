@@ -251,6 +251,47 @@ if (isOn && !AccessControl.isAdmin()) {
    ↓
 5. UI refreshes grade display
 ```
+### Admin Creates Student Flow
+```
+
+1. Admin clicks "Create Student"
+   ↓
+2. AdminPanel.openCreateStudentForm()
+   ↓
+3. Admin enters student details
+   ↓
+4. StudentService.createStudent()
+   ├─ Validate: Required fields
+   ├─ Check: Duplicate roll number
+   ├─ Generate: Student ID
+   ├─ Encrypt: Default password
+   └─ Save: Student record to database
+   ↓
+5. Return success/error
+   ↓
+6. UI displays confirmation message
+
+```
+
+### Admin Creates Section Flow
+```
+1. Admin clicks "Create Section"
+   ↓
+2. AdminPanel.openCreateSectionForm()
+   ↓
+3. Admin enters section details
+   ↓
+4. SectionService.createSection()
+   ├─ Validate: Course & semester
+   ├─ Check: Existing section conflict
+   ├─ Assign: Instructor
+   ├─ Set: Capacity & schedule
+   └─ Save: Section record to database
+   ↓
+5. Return success/error
+   ↓
+6. UI refreshes section list
+```
 
 ## Design Patterns
 
