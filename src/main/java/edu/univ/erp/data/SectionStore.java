@@ -176,6 +176,13 @@ public class SectionStore {
     }
 
     public boolean create(Section section) {
+         if (sectionAlreadyExists(
+            section.getCourseId(),
+            section.getTimes(),
+            section.getRoom())) {
+        System.out.println("Duplicate section blocked: same course, room & time.");
+        return false;
+    }
         String sql =
             "INSERT INTO sections (course_id, instructor_id, room, capacity, semester, year) " +
             "VALUES (?, ?, ?, ?, ?, ?)";
@@ -354,6 +361,40 @@ public class SectionStore {
         
         return section;
     }
+    private boolean sectionAlreadyExists(int courseId, List<SectionTime> times, String room) {
+
+    List<Section> existingSections = findAll();
+
+    for (Section s : existingSections) {
+
+        boolean sameCourse = s.getCourseId() == courseId;
+        boolean sameRoom = s.getRoom().equalsIgnoreCase(room);
+        boolean sameTimes = sameTimeSlots(s.getTimes(), times);
+
+        if (sameCourse && sameRoom && sameTimes) {
+            return true; 
+        }
+    }
+    return false;
+}
+private boolean sameTimeSlots(List<SectionTime> t1, List<SectionTime> t2) {
+    if (t1.size() != t2.size()) return false;
+
+    for (SectionTime a : t1) {
+        boolean found = false;
+        for (SectionTime b : t2) {
+            if (a.getDayOfWeek().equalsIgnoreCase(b.getDayOfWeek()) &&
+                a.getStartTime().equals(b.getStartTime()) &&
+                a.getEndTime().equals(b.getEndTime())) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) return false;
+    }
+    return true;
+}
+
     
     
 }
