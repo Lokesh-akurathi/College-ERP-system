@@ -92,7 +92,7 @@ INSERT INTO students (user_id, roll_no, first_name, last_name, program, year) VA
 
 INSERT INTO instructors (user_id, salutation, first_name, last_name, department) VALUES
 (2, 'Prof.', 'Ashok', 'Mittal', 'Computer Science'),
-(3, 'Dr.', 'Neha', 'Gupta', 'Mathematics');
+(5, 'Dr.', 'Neha', 'Gupta', 'Mathematics');
 
 INSERT INTO courses (code, title, credits) VALUES
 ('CSE101', 'Introduction to Programming', 4),
@@ -106,7 +106,8 @@ INSERT INTO sections (course_id, instructor_id, room, capacity, semester, year) 
 (2, 2, 'Room 102', 40, 'Monsoon', 2025),
 (3, 2, 'Room 103', 35, 'Monsoon', 2025),
 (4, 2, 'Room 104', 60, 'Monsoon', 2025),
-(5, 2, 'Lab 201', 30, 'Monsoon', 2025);
+(5, 5, 'Lab 201', 30, 'Monsoon', 2025);
+
 
 INSERT INTO section_times (section_id, day_of_week, start_time, end_time) VALUES
 (1, 'Mon', '09:00', '10:30'),

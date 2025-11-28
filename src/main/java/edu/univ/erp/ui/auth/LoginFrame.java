@@ -104,7 +104,7 @@ public class LoginFrame extends JFrame {
         footerPanel.setOpaque(false);
         footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         JLabel infoLabel = new JLabel("<html><center>Default Credentials:<br>" +
-                "admin1/admin123, inst1/inst123, stu1/stu123</center></html>");
+                "admin1/admin123, inst1/inst123,inst2/inst123,stu1/stu123</center></html>");
         infoLabel.setFont(new Font("Arial", Font.PLAIN, 10));
         infoLabel.setForeground(Color.WHITE);
         footerPanel.add(infoLabel);
