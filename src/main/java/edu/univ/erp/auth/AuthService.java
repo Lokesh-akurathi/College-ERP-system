@@ -12,8 +12,12 @@ public class AuthService {
     private final SessionManager sessionManager;
 
     public AuthService() {
-        this.authStore = new AuthStore();
-        this.sessionManager = SessionManager.getInstance();
+        this(new AuthStore(), SessionManager.getInstance());
+    }
+
+    public AuthService(AuthStore authStore, SessionManager sessionManager) {
+        this.authStore = authStore;
+        this.sessionManager = sessionManager;
     }
 
     public LoginStatus login(String username, String password) {

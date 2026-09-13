@@ -15,9 +15,13 @@ public class EnrollmentService {
     private final SessionManager sessionManager;
 
     public EnrollmentService() {
-        this.enrollmentStore = new EnrollmentStore();
-        this.sectionStore = new SectionStore();
-        this.sessionManager = SessionManager.getInstance();
+        this(new EnrollmentStore(), new SectionStore(), SessionManager.getInstance());
+    }
+
+    public EnrollmentService(EnrollmentStore enrollmentStore, SectionStore sectionStore, SessionManager sessionManager) {
+        this.enrollmentStore = enrollmentStore;
+        this.sectionStore = sectionStore;
+        this.sessionManager = sessionManager;
     }
 
     public String registerForSection(int sectionId) {

@@ -18,6 +18,8 @@ CREATE TABLE users_auth (
   
 );
 
+CREATE INDEX idx_users_auth_role ON users_auth(role);
+
 INSERT INTO users_auth (username, role, password_hash, status) VALUES
 ('admin1', 'ADMIN', '$2a$12$v03/8A0lewTceJbV3ow7cOsygxujKapftME70yyjnMt7/AftV.OJW', 'ACTIVE'),
 ('inst1', 'INSTRUCTOR', '$2a$12$zY3ROl2rYOCpeM7m/Uxd..bh3nVJ2I18LPWe7gkoHGI9mcNvNmw/S', 'ACTIVE'),

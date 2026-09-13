@@ -25,11 +25,15 @@ public class GradeService {
     private final SessionManager sessionManager;
 
     public GradeService() {
-        this.gradeStore = new GradeStore();
-        this.enrollmentStore = new EnrollmentStore();
-        this.sectionStore = new SectionStore();
-        this.gradingStore = new GradingStore();
-        this.sessionManager = SessionManager.getInstance();
+        this(new GradeStore(), new EnrollmentStore(), new SectionStore(), new GradingStore(), SessionManager.getInstance());
+    }
+
+    public GradeService(GradeStore gradeStore, EnrollmentStore enrollmentStore, SectionStore sectionStore, GradingStore gradingStore, SessionManager sessionManager) {
+        this.gradeStore = gradeStore;
+        this.enrollmentStore = enrollmentStore;
+        this.sectionStore = sectionStore;
+        this.gradingStore = gradingStore;
+        this.sessionManager = sessionManager;
     }
 
     public String enterScore(int enrollmentId, String component, double score) {

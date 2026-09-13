@@ -84,6 +84,12 @@ CREATE TABLE settings (
     value VARCHAR(255)
 );
 
+CREATE INDEX idx_sections_course_id ON sections(course_id);
+CREATE INDEX idx_sections_instructor_id ON sections(instructor_id);
+CREATE INDEX idx_section_times_section_id ON section_times(section_id);
+CREATE INDEX idx_enrollments_section_status ON enrollments(section_id, status);
+CREATE INDEX idx_enrollment_student_id ON enrollments(student_id);
+
 -- SAMPLE DATA UPDATES
 
 INSERT INTO students (user_id, roll_no, first_name, last_name, program, year) VALUES
